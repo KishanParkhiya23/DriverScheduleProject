@@ -1,0 +1,345 @@
+{% load static %}
+
+<head>
+  <title>Driver details form-1</title>
+  <!-- Include Bootstrap CSS -->
+  <link rel="stylesheet" href="/static/css/vendor/bootstrap5/bootstrap5.css" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="/static/css/form.css" />
+  <!-- <link href="library/bootstrap-5/bootstrap.min.css" rel="stylesheet" /> -->
+  <script src="library/bootstrap-5/bootstrap.bundle.min.js"></script>
+  <script src="/static/js/vendor/bootstrap5/dselect.js"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> -->
+  <style>
+    .errorMsg {
+      font-size: 0.7rem;
+      color: #f00;
+      margin-top: 0.3rem;
+      list-style-type: none;
+    }
+    .isInvalid {
+      border: 1px solid #f00;
+      border-radius: 7px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container" id="mainCont">
+    <form
+      id="signUpForm"
+      action="{% url 'DriverSchedule_app:createFormSession' %}"
+      method="POST"
+      enctype="multipart/form-data"
+    >
+      {% csrf_token %}
+      <div class="form-header d-flex mb-4">
+        <span class="stepIndicator text-active">Trip details</span>
+        <span class="stepIndicatorOff text-secondary">Loads details</span>
+      </div>
+      <!-- Driverid, Clientid and shift type -->
+      <div class="row">
+        <div class="col-md-4">
+          <div class="step">
+            <div class="mb-3">
+              <label for="driverId">Driver ID :</label>
+              <select name="driverId" class="form-select" id="driverId">
+                <option value="" disabled selected>Select Driver ID</option>
+                {% for driver_id in driver_ids %}
+                <option value="{{ driver_id }}">{{ driver_id }}</option>
+                {% endfor %}
+              </select>
+              <i class="fa" aria-hidden="true"></i>
+              <li class="errorMsg"></li>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="step">
+            <div class="mb-3">
+              <label for="clientId">Client ID :</label>
+              <select name="clientName" class="form-select" id="clientId">
+                <option value="" disabled selected>Select Client Name</option>
+                {% for client_name in client_ids %}
+                <option value="{{ client_name }}">{{ client_name }}</option>
+                {% endfor %}
+              </select>
+              <i class="fa" aria-hidden="true"></i>
+              <li class="errorMsg"></li>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="step">
+            <div class="mb-3">
+              <label for="shiftType">Shieft Type :</label>
+              <input
+                type="text"
+                id="shiftType"
+                name="shiftType"
+                value="{{ request.session.data.shiftType|default_if_none:'' }}"
+              />
+              <i class="fa" aria-hidden="true"></i>
+              <li class="errorMsg"></li>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Number of Loads and truck number -->
+      <div class="row">
+        <div class="col-md-6">
+          <div class="step">
+            <div class="mb-3">
+              <label for="numberOfLoads">Number of load :</label>
+              <input
+                type="number"
+                id="numberOfLoads"
+                name="numberOfLoads"
+                value="{{ request.session.data.numberOfLoads|default_if_none:'' }}"
+              />
+              <i class="fa" aria-hidden="true"></i>
+              <li class="errorMsg"></li>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="step">
+            <div class="mb-3">
+              <label for="numberOfLoads">Truck No :</label>
+              <select name="truckNum" class="form-select" id="truckNum">
+                <option value="" disabled selected>Select Driver ID</option>
+                {% for admin_truck_nos in admin_truck_no %}
+                <option value="{{ admin_truck_nos }}">
+                  {{ admin_truck_nos }}
+                </option>
+                {% endfor %} {% for client_truck_nos in client_truck_no %}
+                <option value="{{ client_truck_nos }}">
+                  {{ client_truck_nos }}
+                </option>
+                {% endfor %}
+              </select>
+              <i class="fa" aria-hidden="true"></i>
+              <li class="errorMsg"></li>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Startdate and enddate and loadSheet-->
+      <div class="row">
+        <div class="col-md-4">
+          <div class="step">
+            <div class="mb-3">
+              <label for="startDateTime">Start date :</label>
+              <input
+                type="date"
+                name="startDateTime"
+                id="startDateTime"
+                value="{{ request.session.data.startDateTime|default_if_none:'' }}"
+              />
+              <i class="fa" aria-hidden="true"></i>
+              <li class="errorMsg"></li>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="step">
+            <div class="mb-3">
+              <label for="endDateTime">End date :</label>
+              <input
+                type="date"
+                name="endDateTime"
+                id="endDateTime"
+                value="{{ request.session.data.endDateTime|default_if_none:'' }}"
+              />
+              <i class="fa" aria-hidden="true"></i>
+              <li class="errorMsg"></li>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="step">
+            <div class="mb-3">
+              <label for="loadSheet">Upload Load Sheet :</label>
+              <input
+                type="file"
+                placeholder="Load Sheet"
+                name="loadSheet"
+                class="p-2"
+                id="loadSheet"
+              />
+              <i class="fa" aria-hidden="true"></i>
+              <li class="errorMsg"></li>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <textarea placeholder="Comments" name="comments">
+{{ request.session.data.comments|default_if_none:'' }}</textarea
+        >
+      </div>
+      <div class="row">
+        <div class="form-footer">
+          <input
+            type="submit"
+            id="nextBtn"
+            value="Next"
+            class="w-25 d-block ms-auto"
+          />
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Include Bootstrap JS -->
+  <script src="/static/js/vendor/bootstrap5/bootstrap5.bundle.min.js"></script>
+
+  <!-- jquery cdn  -->
+  <script src="/static/js/vendor/jquery/jquery-3.7.0.min.js"></script>
+  <script src="/static/js/vendor/jquery/jquery.validate.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script
+    src="https://code.jquery.com/jquery-3.7.0.min.js"
+    integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+    crossorigin="anonymous"
+  ></script>
+
+  <script>
+    if ($(window).width() < 1000) {
+      $("body #mainCont").addClass("container-fluid");
+      $("body #mainCont").removeClass("container");
+    } else {
+    }
+
+    document
+      .getElementById("nextBtn")
+      .addEventListener("click", function (event) {
+        event.preventDefault();
+
+        if (checkData()) {
+          $("#signUpForm").submit();
+        }
+      });
+
+    var driverId = document.getElementById("driverId");
+    var clientId = document.getElementById("clientId");
+    var shiftType = document.getElementById("shiftType");
+    var numberOfLoads = document.getElementById("numberOfLoads");
+    var truckNum = document.getElementById("truckNum");
+    var startDateTime = document.getElementById("startDateTime");
+    var endDateTime = document.getElementById("endDateTime");
+    var loadSheet = document.getElementById("loadSheet");
+
+    function checkData() {
+      var driverIdValue = driverId.value.trim();
+      var clientIdValue = clientId.value.trim();
+      var shiftTypeValue = shiftType.value.trim();
+      var numberOfLoadsValue = numberOfLoads.value.trim();
+      var truckNumValue = truckNum.value.trim();
+      var startDateTimeValue = startDateTime.value.trim();
+      var endDateTimeValue = endDateTime.value.trim();
+      var loadSheetValue = loadSheet.value.trim();
+
+      var isValid = true;
+
+      if (driverIdValue == "") {
+        setError(driverId, "Driver ID can't be blank.");
+        isValid = false;
+      } else {
+        setSuccess(driverId);
+      }
+      if (clientIdValue == "") {
+        setError(clientId, "Client ID can't be blank.");
+        isValid = false;
+      } else {
+        setSuccess(clientId);
+      }
+      if (shiftTypeValue == "") {
+        setError(shiftType, "Shift type can't be empty.");
+        isValid = false;
+      } else {
+        setSuccess(shiftType);
+      }
+      if (numberOfLoadsValue == "") {
+        setError(numberOfLoads, "Number of loads can't be empty.");
+        isValid = false;
+      } else {
+        setSuccess(numberOfLoads);
+      }
+      if (truckNumValue == "") {
+        setError(truckNum, "Truck number can't be left blank.");
+        isValid = false;
+      } else {
+        setSuccess(truckNum);
+      }
+      if (startDateTimeValue == "") {
+        setError(startDateTime, "Start date can't be blank.");
+        isValid = false;
+      } else {
+        setSuccess(startDateTime);
+      }
+      if (endDateTimeValue == "") {
+        setError(endDateTime, "End date can't be blank.");
+        isValid = false;
+      } else {
+        setSuccess(endDateTime);
+      }
+
+      if (loadSheetValue == "") {
+        setError(loadSheet, "Please upload a Load Sheet.");
+        isValid = false;
+      } else {
+        setSuccess(loadSheet);
+      }
+
+      return isValid;
+    }
+
+    function setError(inputElement, msg) {
+      var parentBox = inputElement.parentElement;
+      parentBox.classList.remove("success");
+      parentBox.classList.add("error");
+      var span = parentBox.querySelector(".errorMsg");
+      var fa = parentBox.querySelector(".fa");
+      span.innerText = msg;
+      fa.className = "fa fa-exclamation-circle";
+      inputElement.style.borderColor = "#f00";
+    }
+
+    function setSuccess(inputElement) {
+      var parentBox = inputElement.parentElement;
+      parentBox.classList.remove("error");
+      parentBox.classList.add("success");
+      var span = parentBox.querySelector(".errorMsg");
+      span.innerText = "";
+      var fa = parentBox.querySelector(".fa");
+      // span.innerText = isInvalid; 
+      fa.className = "fa fa-check-circle";
+      inputElement.style.borderColor = "";
+    }
+
+    var select_box_element = document.querySelector("#driverId");
+
+    dselect(select_box_element, {
+      search: true,
+    });
+
+    var select_box_element = document.querySelector("#clientId");
+
+    dselect(select_box_element, {
+      search: true,
+    });
+
+    var select_box_element = document.querySelector("#truckNum");
+
+    dselect(select_box_element, {
+      search: true,
+    });
+  </script>
+</body>
