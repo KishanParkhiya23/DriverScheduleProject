@@ -62,6 +62,7 @@ def getDriverData(request):
  
 @api_view(['GET'])
 def getForm1(request):
+    # return HttpResponse(request.session.get())
     client_names = Client.objects.values_list('name', flat=True).distinct()
     driver_ids = Driver.objects.values_list('driverId', flat=True).distinct()
     admin_truck_no = AdminTruck.objects.values_list('adminTruckNumber', flat=True).distinct()

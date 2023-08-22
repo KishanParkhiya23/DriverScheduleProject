@@ -9,20 +9,30 @@
     rel="stylesheet"
   />
   <link rel="stylesheet" href="/static/css/form.css" />
-  <!-- <link href="library/bootstrap-5/bootstrap.min.css" rel="stylesheet" /> -->
-  <script src="library/bootstrap-5/bootstrap.bundle.min.js"></script>
+  {% comment %} <link href="library/bootstrap-5/    .min.css" rel="stylesheet" /> {% endcomment %}
+   <script src="library/bootstrap-5/bootstrap.bundle.min.js"></script>
   <script src="/static/js/vendor/bootstrap5/dselect.js"></script>
   <!-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> -->
   <style>
     .errorMsg {
       font-size: 0.7rem;
-      color: #f00;
+      color: rgb(255, 0, 0);
       margin-top: 0.3rem;
       list-style-type: none;
     }
     .isInvalid {
-      border: 1px solid #f00;
+      border: 1px solid rgb(255, 0, 0);
       border-radius: 7px;
+    }
+    body{
+      font-family: "Helvetica Neue",Helvetica,Arial
+    }
+    .form-select{
+      text-align:left!important;
+      padding:0.63rem 0.8rem;
+    }
+    .dropdown-menu{
+      width: 100%;
     }
   </style>
 </head>
@@ -46,7 +56,7 @@
           <div class="step">
             <div class="mb-3">
               <label for="driverId">Driver ID :</label>
-              <select name="driverId" class="form-select" id="driverId">
+              <select name="driverId" class="form-select " id="driverId">
                 <option value="" disabled selected>Select Driver ID</option>
                 {% for driver_id in driver_ids %}
                 <option value="{{ driver_id }}">{{ driver_id }}</option>
@@ -75,18 +85,19 @@
         <div class="col-md-4">
           <div class="step">
             <div class="mb-3">
-              <label for="shiftType">Shieft Type :</label>
-              <input
-                type="text"
-                id="shiftType"
-                name="shiftType"
-                value="{{ request.session.data.shiftType|default_if_none:'' }}"
-              />
+              <label for="shiftType">Shift Type :</label>
+              <select id="shiftType" class="form-select" name="shiftType">
+                <option value="" selected disabled>Select Shift Type</option>
+                <option value="morning">Morning</option>
+                <option value="afternoon">Afternoon</option>
+                <option value="night">Night</option>
+              </select>
               <i class="fa" aria-hidden="true"></i>
               <li class="errorMsg"></li>
             </div>
           </div>
         </div>
+        
       </div>
 
       <!-- Number of Loads and truck number -->
@@ -96,7 +107,9 @@
             <div class="mb-3">
               <label for="numberOfLoads">Number of load :</label>
               <input
+                
                 type="number"
+                min="1"
                 id="numberOfLoads"
                 name="numberOfLoads"
                 value="{{ request.session.data.numberOfLoads|default_if_none:'' }}"
@@ -201,7 +214,7 @@
   <script src="/static/js/vendor/bootstrap5/bootstrap5.bundle.min.js"></script>
 
   <!-- jquery cdn  -->
-  <script src="/static/js/vendor/jquery/jquery-3.7.0.min.js"></script>
+  {% comment %} <script src="/static/js/vendor/jquery/jquery-3.7.0.min.js"></script> {% endcomment %}
   <script src="/static/js/vendor/jquery/jquery.validate.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <script
@@ -225,6 +238,7 @@
         if (checkData()) {
           $("#signUpForm").submit();
         }
+        
       });
 
     var driverId = document.getElementById("driverId");
@@ -250,12 +264,15 @@
 
       if (driverIdValue == "") {
         setError(driverId, "Driver ID can't be blank.");
+        $("#driverId").next('.dselect-wrapper').addClass('isInvalid')
         isValid = false;
       } else {
         setSuccess(driverId);
       }
       if (clientIdValue == "") {
         setError(clientId, "Client ID can't be blank.");
+        $("#clientId").next('.dselect-wrapper').addClass('isInvalid')
+
         isValid = false;
       } else {
         setSuccess(clientId);
@@ -274,6 +291,8 @@
       }
       if (truckNumValue == "") {
         setError(truckNum, "Truck number can't be left blank.");
+        $("#truckNum").next('.dselect-wrapper').addClass('isInvalid')
+
         isValid = false;
       } else {
         setSuccess(truckNum);
@@ -298,6 +317,11 @@
         setSuccess(loadSheet);
       }
 
+      var invalidInputs = document.querySelectorAll('.isInvalid');
+      invalidInputs.forEach(function (input) {
+        setError(input, "This field is required.");
+      });
+
       return isValid;
     }
 
@@ -309,7 +333,7 @@
       var fa = parentBox.querySelector(".fa");
       span.innerText = msg;
       fa.className = "fa fa-exclamation-circle";
-      inputElement.style.borderColor = "#f00";
+      inputElement.style.borderColor = "rgb(255, 0, 0)"; 
     }
 
     function setSuccess(inputElement) {
@@ -319,7 +343,7 @@
       var span = parentBox.querySelector(".errorMsg");
       span.innerText = "";
       var fa = parentBox.querySelector(".fa");
-      // span.innerText = isInvalid; 
+      $(`#${inputElement.id}`).next('.dselect-wrapper').removeClass('isInvalid')
       fa.className = "fa fa-check-circle";
       inputElement.style.borderColor = "";
     }
@@ -341,5 +365,20 @@
     dselect(select_box_element, {
       search: true,
     });
+
+     // Get the input element
+  const numberOfLoadsInput = document.getElementById('numberOfLoads');
+
+  // Add an event listener for input changes
+  numberOfLoadsInput.addEventListener('input', function () {
+    // Remove leading zeros
+    this.value = this.value.replace(/^1+/, '');
+
+    // Convert to positive integer
+    let value = parseInt(this.value) || 1;
+
+    // Update the input value
+    this.value = value;
+  });
   </script>
 </body>
