@@ -25,7 +25,7 @@ class Client(models.Model):
     name = models.CharField(max_length=200)
 
     def __str__(self) -> str:
-        return  str(self.clientId)
+        return  str(self.name)
 
 
 class Trip(models.Model):
@@ -53,7 +53,7 @@ class Docket(models.Model):
         return  str(self.tripId)
 
 class AdminTruck(models.Model):
-    adminTruckNumber = models.PositiveIntegerField(validators=[MaxValueValidator(99999),MinValueValidator(10000)])
+    adminTruckNumber = models.PositiveIntegerField(validators=[MaxValueValidator(99999),MinValueValidator(10000)], unique=True)
     def __str__(self):
         return  str(self.adminTruckNumber)
     

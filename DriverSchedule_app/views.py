@@ -62,9 +62,9 @@ def getDriverData(request):
  
 @api_view(['GET'])
 def getForm1(request):
-    # return HttpResponse(request.session.get())
-    client_names = Client.objects.values_list('name', flat=True).distinct()
+    
     driver_ids = Driver.objects.values_list('driverId', flat=True).distinct()
+    client_names = Client.objects.values_list('name', flat=True).distinct()
     admin_truck_no = AdminTruck.objects.values_list('adminTruckNumber', flat=True).distinct()
     client_truck_no = ClientTruckConnection.objects.values_list('clientTruckId', flat=True).distinct()
     
@@ -94,7 +94,7 @@ def createFormSession(request):
         fileName = loadSheet.name
         time = (str(timezone.now())).replace(':','').replace('-','').replace(' ','').split('.')
         time = time[0]
-        load_sheet_new_filename = time + '!_@' + fileName.replace(" ", "").replace("\t", "") 
+        load_sheet_new_filename ='Load_Sheet'+ time + '!_@' + fileName.replace(" ", "").replace("\t", "") 
         lfs = FileSystemStorage(location=load_sheet_folder_path)
         l_filename = lfs.save(load_sheet_new_filename, loadSheet)
         
@@ -130,10 +130,34 @@ def formsSave(request):
     loadSheet = request.session['data']['loadSheet']    
     comment = request.session['data']['comments']    
     
-    
-    
-  
-    shutil.move('Temp_Load_Sheet/' + loadSheet, 'Final_Load_Sheet/') if not os.path.exists('Final_Load_Sheet/' + loadSheet) else None
+    temp_loadsheet = ''
+    Docket_no = []
+    Docket_file = []
+   
+    for i in range(1,int(numberOfLoad)+1):
+        key = f"docketNumber[{i}]"
+        docket_number = request.POST.get(key)
+        Docket_no.append(docket_number)
+        key_files = f"docketFile[{i}]"
+        docket_files = request.FILES.get(key_files)
+
+        temp_loadsheet = temp_loadsheet + '-' + docket_number
+
+        if docket_files:
+            # Specify the folder path where you want to save the file
+            
+            # PDF ---------------
+            pdf_folder_path = 'Docket_File'
+            fileName = docket_files.name
+            time = (str(timezone.now())).replace(':','').replace('-','').replace(' ','').split('.')
+            time = time[0]
+            docket_new_filename = time + '!_@' + docket_number 
+            pfs = FileSystemStorage(location=pdf_folder_path)
+            pfs.save(docket_new_filename, docket_files)
+            Docket_file.append(docket_new_filename)
+        
+    temp_loadsheet =  time + '!_@' + temp_loadsheet[1:]
+    shutil.move('Temp_Load_Sheet/' + loadSheet, 'Final_Load_Sheet/'+temp_loadsheet) if not os.path.exists('Final_Load_Sheet/' + temp_loadsheet) else None
 
     
     driver = Driver.objects.get(driverId=driverId)
@@ -146,35 +170,10 @@ def formsSave(request):
         truckNo=truckNo,
         startDateTime=startDateTime,
         endDateTime=endDateTime,
-        loadSheet=loadSheet,  # Use the filename or None
+        loadSheet=temp_loadsheet,  # Use the filename or None
         comment=comment
     )
     trip.save()
-    
-    Docket_no = []
-    Docket_file = []
-
-    for i in range(1,int(numberOfLoad)+1):
-        key = f"docketNumber[{i}]"
-        docket_number = request.POST.get(key)
-        Docket_no.append(docket_number)
-        key_files = f"docketFile[{i}]"
-        docket_files = request.FILES.get(key_files)
-        print(docket_files)
-
-        if docket_files:
-            # Specify the folder path where you want to save the file
-            
-            # PDF ---------------
-            pdf_folder_path = 'Docket_File'
-            fileName = docket_files.name
-            time = (str(timezone.now())).replace(':','').replace('-','').replace(' ','').split('.')
-            time = time[0]
-            docket_new_filename = time + '!_@' + fileName.replace(" ", "").replace("\t", "") 
-            pfs = FileSystemStorage(location=pdf_folder_path)
-            p_filename = pfs.save(docket_new_filename, docket_files)
-            Docket_file.append(docket_new_filename)
-            
             
     for i in range(len(Docket_no)):
         docket_ = Docket(
@@ -200,7 +199,7 @@ def saveFileForm(request):
     pdf_file = request.FILES.get('pdf_file')
 
     if pdf_file:
-        # Specify the folder path where you want to save the file
+
         
         # PDF ---------------
         pdf_folder_path = 'PDF'

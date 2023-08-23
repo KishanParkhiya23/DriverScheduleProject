@@ -70,7 +70,7 @@
         <div class="col-md-4">
           <div class="step">
             <div class="mb-3">
-              <label for="clientId">Client ID :</label>
+              <label for="clientId">Client Name :</label>
               <select name="clientName" class="form-select" id="clientId">
                 <option value="" disabled selected>Select Client Name</option>
                 {% for client_name in client_ids %}
@@ -124,7 +124,7 @@
             <div class="mb-3">
               <label for="numberOfLoads">Truck No :</label>
               <select name="truckNum" class="form-select" id="truckNum">
-                <option value="" disabled selected>Select Driver ID</option>
+                <option value="" disabled selected>Select Truck No</option>
                 {% for admin_truck_nos in admin_truck_no %}
                 <option value="{{ admin_truck_nos }}">
                   {{ admin_truck_nos }}

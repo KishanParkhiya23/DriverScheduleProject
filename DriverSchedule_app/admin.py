@@ -8,14 +8,14 @@ from .models import *
 class Trip_(admin.ModelAdmin):
 
     list_display = ["driverId", "clientName", 'truckNo',"shiftType", "startDateTime", 'endDateTime',"numberOfLoad", "loadSheet"]
-    search_fields = ["driverId", 'clientName', 'truckNo']
+    # search_fields = ["driverId", 'clientName']
 
-admin.site.register(Trip, Trip_)
+admin.site.register(Trip,Trip_)
 
 class Docket_(admin.ModelAdmin):
 
     list_display = ["docketId","tripId", 'docketNumber', 'docketFile']
-    search_fields = ["docketId","tripId","docketNumber" ]
+    search_fields = ["docketNumber"]
 
 admin.site.register(Docket, Docket_)
 
@@ -37,13 +37,13 @@ admin.site.register(AdminTruck, AdminTruck_)
 class ClientTruckConnection_(admin.ModelAdmin):
 
     list_display = ["truckNumber", "clientId", 'clientTruckId']
-    search_fields = ["truckNumber", 'clientId', 'clientTruckId']
+    search_fields = ['clientTruckId']
 
 admin.site.register(ClientTruckConnection, ClientTruckConnection_)
 
 class Driver_(admin.ModelAdmin):
 
     list_display = ["driverId", "name", 'phone']
-    search_fields = ["driverId", 'name', 'phone']
+    search_fields = ["driverId"]
 
 admin.site.register(Driver, Driver_)
