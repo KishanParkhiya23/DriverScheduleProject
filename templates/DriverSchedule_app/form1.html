@@ -4,13 +4,11 @@
   <title>Driver details form-1</title>
   <!-- Include Bootstrap CSS -->
   <link rel="stylesheet" href="/static/css/vendor/bootstrap5/bootstrap5.css" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap"
-    rel="stylesheet"
-  />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/static/css/form.css" />
-  {% comment %} <link href="library/bootstrap-5/    .min.css" rel="stylesheet" /> {% endcomment %}
-   <script src="library/bootstrap-5/bootstrap.bundle.min.js"></script>
+  {% comment %}
+  <link href="library/bootstrap-5/    .min.css" rel="stylesheet" /> {% endcomment %}
+  <script src="library/bootstrap-5/bootstrap.bundle.min.js"></script>
   <script src="/static/js/vendor/bootstrap5/dselect.js"></script>
   <!-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> -->
   <style>
@@ -20,31 +18,35 @@
       margin-top: 0.3rem;
       list-style-type: none;
     }
+
     .isInvalid {
       border: 1px solid rgb(255, 0, 0);
       border-radius: 7px;
     }
-    body{
-      font-family: "Helvetica Neue",Helvetica,Arial
+
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial
     }
-    .form-select{
-      text-align:left!important;
-      padding:0.63rem 0.8rem;
+
+    .form-select {
+      text-align: left !important;
+      padding: 0.63rem 0.8rem;
     }
-    .dropdown-menu{
+
+    .dropdown-menu {
       width: 100%;
     }
+
+    /* #driverId{
+      display: block!important;
+    }*/
   </style>
 </head>
 
 <body>
   <div class="container" id="mainCont">
-    <form
-      id="signUpForm"
-      action="{% url 'DriverSchedule_app:createFormSession' %}"
-      method="POST"
-      enctype="multipart/form-data"
-    >
+    <form id="signUpForm" action="{% url 'DriverSchedule_app:createFormSession' %}" method="POST"
+      enctype="multipart/form-data">
       {% csrf_token %}
       <div class="form-header d-flex mb-4">
         <span class="stepIndicator text-active">Trip details</span>
@@ -56,12 +58,21 @@
           <div class="step">
             <div class="mb-3">
               <label for="driverId">Driver ID :</label>
-              <select name="driverId" class="form-select " id="driverId">
-                <option value="" disabled selected>Select Driver ID</option>
-                {% for driver_id in driver_ids %}
-                <option value="{{ driver_id }}">{{ driver_id }}</option>
+
+              {% if driver_ids is not None %}
+              <input type="text" name="driverId" id="driverId"
+                value="{% if driver_ids is not None %}{{driver_ids}}{% endif %}" readonly class="d-block">
+              {% endif %}
+
+              {% if drivers is not None%}
+              <select name="driverId" class="form-select" id="driverId">
+                <option value="" disabled selected>Select Driver Id</option>
+                {% for driver in drivers %}
+                <option value="{{ driver.driverId }}-{{driver.name}}">{{ driver.driverId }} - {{driver.name}}</option>
                 {% endfor %}
               </select>
+              {% endif %}
+
               <i class="fa" aria-hidden="true"></i>
               <li class="errorMsg"></li>
             </div>
@@ -97,23 +108,17 @@
             </div>
           </div>
         </div>
-        
+
       </div>
 
-      <!-- Number of Loads and truck number -->
+      <!-- Number of Logs and truck number -->
       <div class="row">
         <div class="col-md-6">
           <div class="step">
             <div class="mb-3">
-              <label for="numberOfLoads">Number of load :</label>
-              <input
-                
-                type="number"
-                min="1"
-                id="numberOfLoads"
-                name="numberOfLoads"
-                value="{{ request.session.data.numberOfLoads|default_if_none:'' }}"
-              />
+              <label for="numberOfLogs">Number of load :</label>
+              <input type="number" min="1" id="numberOfLogs" name="numberOfLogs"
+                value="{{ request.session.data.numberOfLogs|default_if_none:'' }}" />
               <i class="fa" aria-hidden="true"></i>
               <li class="errorMsg"></li>
             </div>
@@ -122,7 +127,7 @@
         <div class="col-md-6">
           <div class="step">
             <div class="mb-3">
-              <label for="numberOfLoads">Truck No :</label>
+              <label for="numberOfLogs">Truck No :</label>
               <select name="truckNum" class="form-select" id="truckNum">
                 <option value="" disabled selected>Select Truck No</option>
                 {% for admin_truck_nos in admin_truck_no %}
@@ -141,19 +146,48 @@
           </div>
         </div>
       </div>
+      <!-- ---------------------------------------------------------------------------------------------------------- -->
+      <!-- source and shift date number -->
+      <div class="row">
+        <div class="col-md-6">
+          <div class="step">
+            <div class="mb-3">
+              <label for="shiftDate">Shift date:</label>
+              <input type="date" id="shiftDate" name="shiftDate" />
+              <i class="fa" aria-hidden="true"></i>
+              <li class="errorMsg"></li>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="step">
+            <div class="mb-3">
+              <label for="source">Source :</label>
+              <select name="source" class="form-select" id="source">
+                <option value="" disabled selected>Select source</option>
 
-      <!-- Startdate and enddate and loadSheet-->
+                {% for source in sources %}
+                <option value="{{ source }}">
+                  {{ source }}
+                </option>
+                {% endfor %}
+              </select>
+              <i class="fa" aria-hidden="true"></i>
+              <li class="errorMsg"></li>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ---------------------------------------------------------------------------------------------------------- -->
+
+      <!-- Startdate and enddate and logSheet-->
       <div class="row">
         <div class="col-md-4">
           <div class="step">
             <div class="mb-3">
-              <label for="startDateTime">Start date :</label>
-              <input
-                type="date"
-                name="startDateTime"
-                id="startDateTime"
-                value="{{ request.session.data.startDateTime|default_if_none:'' }}"
-              />
+              <label for="startTime">Start time :</label>
+              <input type="time" name="startTime" id="startTime"
+                value="{{ request.session.data.startTime|default_if_none:'' }}" />
               <i class="fa" aria-hidden="true"></i>
               <li class="errorMsg"></li>
             </div>
@@ -162,13 +196,9 @@
         <div class="col-md-4">
           <div class="step">
             <div class="mb-3">
-              <label for="endDateTime">End date :</label>
-              <input
-                type="date"
-                name="endDateTime"
-                id="endDateTime"
-                value="{{ request.session.data.endDateTime|default_if_none:'' }}"
-              />
+              <label for="endTime">End time :</label>
+              <input type="time" name="endTime" id="endTime"
+                value="{{ request.session.data.endTime|default_if_none:'' }}" />
               <i class="fa" aria-hidden="true"></i>
               <li class="errorMsg"></li>
             </div>
@@ -177,14 +207,8 @@
         <div class="col-md-4">
           <div class="step">
             <div class="mb-3">
-              <label for="loadSheet">Upload Load Sheet :</label>
-              <input
-                type="file"
-                placeholder="Load Sheet"
-                name="loadSheet"
-                class="p-2"
-                id="loadSheet"
-              />
+              <label for="logSheet">Upload Log Sheet :</label>
+              <input type="file" placeholder="Load Sheet" name="logSheet" class="p-2" id="logSheet" />
               <i class="fa" aria-hidden="true"></i>
               <li class="errorMsg"></li>
             </div>
@@ -194,17 +218,11 @@
 
       <div class="mb-3">
         <textarea placeholder="Comments" name="comments">
-{{ request.session.data.comments|default_if_none:'' }}</textarea
-        >
+{{ request.session.data.comments|default_if_none:'' }}</textarea>
       </div>
       <div class="row">
         <div class="form-footer">
-          <input
-            type="submit"
-            id="nextBtn"
-            value="Next"
-            class="w-25 d-block ms-auto"
-          />
+          <input type="submit" id="nextBtn" value="Next" class="w-25 d-block ms-auto" />
         </div>
       </div>
     </form>
@@ -214,14 +232,12 @@
   <script src="/static/js/vendor/bootstrap5/bootstrap5.bundle.min.js"></script>
 
   <!-- jquery cdn  -->
-  {% comment %} <script src="/static/js/vendor/jquery/jquery-3.7.0.min.js"></script> {% endcomment %}
+  {% comment %}
+  <script src="/static/js/vendor/jquery/jquery-3.7.0.min.js"></script> {% endcomment %}
   <script src="/static/js/vendor/jquery/jquery.validate.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-  <script
-    src="https://code.jquery.com/jquery-3.7.0.min.js"
-    integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
-    crossorigin="anonymous"
-  ></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+    integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
 
   <script>
     if ($(window).width() < 1000) {
@@ -238,37 +254,55 @@
         if (checkData()) {
           $("#signUpForm").submit();
         }
-        
+
       });
 
     var driverId = document.getElementById("driverId");
     var clientId = document.getElementById("clientId");
     var shiftType = document.getElementById("shiftType");
-    var numberOfLoads = document.getElementById("numberOfLoads");
+    var numberOfLogs = document.getElementById("numberOfLogs");
     var truckNum = document.getElementById("truckNum");
-    var startDateTime = document.getElementById("startDateTime");
-    var endDateTime = document.getElementById("endDateTime");
-    var loadSheet = document.getElementById("loadSheet");
+    var source = document.getElementById("source");
+    var shiftDate = document.getElementById("shiftDate");
+    var startTime = document.getElementById("startTime");
+    var endTime = document.getElementById("endTime");
+    var logSheet = document.getElementById("logSheet");
+    var drivers = "{{drivers}}"
 
     function checkData() {
       var driverIdValue = driverId.value.trim();
       var clientIdValue = clientId.value.trim();
       var shiftTypeValue = shiftType.value.trim();
-      var numberOfLoadsValue = numberOfLoads.value.trim();
+      var numberOfLogsValue = numberOfLogs.value.trim();
       var truckNumValue = truckNum.value.trim();
-      var startDateTimeValue = startDateTime.value.trim();
-      var endDateTimeValue = endDateTime.value.trim();
-      var loadSheetValue = loadSheet.value.trim();
+      var sourceValue = source.value.trim();
+      var shiftDateValue = shiftDate.value.trim();
+      var startTimeValue = startTime.value.trim();
+      var endTimeValue = endTime.value.trim();
+      var logSheetValue = logSheet.value.trim();
 
       var isValid = true;
 
-      if (driverIdValue == "") {
-        setError(driverId, "Driver ID can't be blank.");
-        $("#driverId").next('.dselect-wrapper').addClass('isInvalid')
-        isValid = false;
+
+
+      if (drivers) {
+        if (driverIdValue == "") {
+          setError(driverId, "Driver id can't be left blank.");
+          $("#driverId").next('.dselect-wrapper').addClass('isInvalid')
+          isValid = false;
+        } else {
+          setSuccess(driverId);
+        }
       } else {
-        setSuccess(driverId);
+        if (driverIdValue == "") {
+          setError(driverId, "Driver ID can't be blank.");
+          $("#driverId").addClass('isInvalid')
+          isValid = false;
+        } else {
+          setSuccess(driverId);
+        }
       }
+
       if (clientIdValue == "") {
         setError(clientId, "Client ID can't be blank.");
         $("#clientId").next('.dselect-wrapper').addClass('isInvalid')
@@ -283,11 +317,11 @@
       } else {
         setSuccess(shiftType);
       }
-      if (numberOfLoadsValue == "") {
-        setError(numberOfLoads, "Number of loads can't be empty.");
+      if (numberOfLogsValue == "") {
+        setError(numberOfLogs, "Number of loads can't be empty.");
         isValid = false;
       } else {
-        setSuccess(numberOfLoads);
+        setSuccess(numberOfLogs);
       }
       if (truckNumValue == "") {
         setError(truckNum, "Truck number can't be left blank.");
@@ -297,24 +331,41 @@
       } else {
         setSuccess(truckNum);
       }
-      if (startDateTimeValue == "") {
-        setError(startDateTime, "Start date can't be blank.");
+
+      if (shiftDateValue == "") {
+        setError(shiftDate, "Shift date can't be blank.");
         isValid = false;
       } else {
-        setSuccess(startDateTime);
-      }
-      if (endDateTimeValue == "") {
-        setError(endDateTime, "End date can't be blank.");
-        isValid = false;
-      } else {
-        setSuccess(endDateTime);
+        setSuccess(shiftDate);
       }
 
-      if (loadSheetValue == "") {
-        setError(loadSheet, "Please upload a Load Sheet.");
+      if (sourceValue == "") {
+        setError(source, "source can't be left blank.");
+        $("#source").next('.dselect-wrapper').addClass('isInvalid')
+
         isValid = false;
       } else {
-        setSuccess(loadSheet);
+        setSuccess(source);
+      }
+
+      if (startTimeValue == "") {
+        setError(startTime, "Start time can't be blank.");
+        isValid = false;
+      } else {
+        setSuccess(startTime);
+      }
+      if (endTimeValue == "") {
+        setError(endTime, "End time can't be blank.");
+        isValid = false;
+      } else {
+        setSuccess(endTime);
+      }
+
+      if (logSheetValue == "") {
+        setError(logSheet, "Please upload a Load Sheet.");
+        isValid = false;
+      } else {
+        setSuccess(logSheet);
       }
 
       var invalidInputs = document.querySelectorAll('.isInvalid');
@@ -333,7 +384,7 @@
       var fa = parentBox.querySelector(".fa");
       span.innerText = msg;
       fa.className = "fa fa-exclamation-circle";
-      inputElement.style.borderColor = "rgb(255, 0, 0)"; 
+      inputElement.style.borderColor = "rgb(255, 0, 0)";
     }
 
     function setSuccess(inputElement) {
@@ -348,13 +399,13 @@
       inputElement.style.borderColor = "";
     }
 
-    var select_box_element = document.querySelector("#driverId");
+    var select_box_element = document.querySelector("#clientId");
 
     dselect(select_box_element, {
       search: true,
     });
 
-    var select_box_element = document.querySelector("#clientId");
+    var select_box_element = document.querySelector("#source");
 
     dselect(select_box_element, {
       search: true,
@@ -366,19 +417,30 @@
       search: true,
     });
 
-     // Get the input element
-  const numberOfLoadsInput = document.getElementById('numberOfLoads');
+    if (drivers) {
+      var driverIdSelect = document.querySelector("#driverId");
 
-  // Add an event listener for input changes
-  numberOfLoadsInput.addEventListener('input', function () {
-    // Remove leading zeros
-    this.value = this.value.replace(/^1+/, '');
+      dselect(driverIdSelect, {
+        search: true,
+      });
+    }
 
-    // Convert to positive integer
-    let value = parseInt(this.value) || 1;
+    // Get the input element
+    const numberOfLogsInput = document.getElementById('numberOfLogs');
 
-    // Update the input value
-    this.value = value;
-  });
+    // Add an event listener for input changes
+    numberOfLogsInput.addEventListener('input', function () {
+      // Remove leading zeros
+      this.value = this.value.replace(/^1+/, '');
+
+      // Convert to positive integer
+      let value = parseInt(this.value) || 1;
+
+      // Update the input value
+      this.value = value;
+    });
   </script>
+
+
+
 </body>
