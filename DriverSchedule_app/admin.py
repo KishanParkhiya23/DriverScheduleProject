@@ -7,7 +7,7 @@ from .models import *
 
 class Trip_(admin.ModelAdmin):
 
-    list_display = ["driverId", "clientName", 'truckNo',"shiftType", "startDateTime", 'endDateTime',"numberOfLoad", "loadSheet"]
+    list_display = ["driverId", "clientName", 'truckNo',"shiftType", "startTime", 'endTime',"numberOfLog", "logSheet","source","shiftDate"]
     # search_fields = ["driverId", 'clientName']
 
 admin.site.register(Trip,Trip_)
@@ -25,6 +25,13 @@ class Client_(admin.ModelAdmin):
     search_fields = ["clientId","name"]
 
 admin.site.register(Client, Client_)
+
+class Source_(admin.ModelAdmin):
+
+    list_display = ["sourceName"]
+    search_fields = ["sourceName"]
+
+admin.site.register(Source, Source_)
 
 class AdminTruck_(admin.ModelAdmin):
 

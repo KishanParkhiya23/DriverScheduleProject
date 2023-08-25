@@ -62,20 +62,42 @@ def getDriverData(request):
  
 @api_view(['GET'])
 def getForm1(request):
-    
-    driver_ids = Driver.objects.values_list('driverId', flat=True).distinct()
-    client_names = Client.objects.values_list('name', flat=True).distinct()
-    admin_truck_no = AdminTruck.objects.values_list('adminTruckNumber', flat=True).distinct()
-    client_truck_no = ClientTruckConnection.objects.values_list('clientTruckId', flat=True).distinct()
-    
-    return render(request, 'DriverSchedule_app/form1.html', {'driver_ids': driver_ids ,'client_ids' : client_names,'admin_truck_no' : admin_truck_no,'client_truck_no' : client_truck_no} )
+    params = {}
+    if request.user.is_authenticated:
+        user_email = request.user.email
+                  
 
+        # return HttpResponse(Driver.objects.values_list('driverId', flat=True))
+        client_names = Client.objects.values_list('name', flat=True).distinct() 
+        admin_truck_no = AdminTruck.objects.values_list('adminTruckNumber', flat=True).distinct()
+        client_truck_no = ClientTruckConnection.objects.values_list('clientTruckId', flat=True).distinct()
+        sources = Source.objects.values_list('sourceName', flat=True).distinct()
+        params = {
+            'client_ids' : client_names,
+            'admin_truck_no' : admin_truck_no,
+            'client_truck_no' : client_truck_no,
+            'sources':sources,
+            }
+        try:
+            driver_id = str(Driver.objects.get(email=user_email)) +'-' +  str(Driver.objects.filter(email = user_email).values_list('name', flat=True)[0])
+            params['driver_ids'] = driver_id
+            params['drivers'] = None
+        except:
+            params['driver_ids'] = None
+            drivers = Driver.objects.all()
+            params['drivers'] = drivers
+            
+      
+        return render(request, 'DriverSchedule_app/form1.html', params)
+
+    else:
+        return redirect('/admin')
 
 @api_view(['GET'])
 def getForm2(request):
     if 'data' in request.session:
         params = {        
-            'loads' :[i+1 for i in range(int( request.session['data'].get('numberOfLoads')))]
+            'loads' :[i+1 for i in range(int( request.session['data'].get('numberOfLogs')))]
         } 
         return render(request,'DriverSchedule_app/form2.html',params)
     else:
@@ -85,32 +107,38 @@ def getForm2(request):
 @csrf_protect
 @api_view(['POST'])
 def createFormSession(request):
-    loadSheet = request.FILES.get('loadSheet')
+    
+    logSheet = request.FILES.get('logSheet')
 
 
-    if loadSheet:
-       
+    if logSheet:
         load_sheet_folder_path = 'Temp_Load_Sheet'
-        fileName = loadSheet.name
+        fileName = logSheet.name
         time = (str(timezone.now())).replace(':','').replace('-','').replace(' ','').split('.')
         time = time[0]
-        load_sheet_new_filename ='Load_Sheet'+ time + '!_@' + fileName.replace(" ", "").replace("\t", "") 
+        log_sheet_new_filename ='Load_Sheet'+ time + '!_@' + fileName.replace(" ", "").replace("\t", "") 
         lfs = FileSystemStorage(location=load_sheet_folder_path)
-        l_filename = lfs.save(load_sheet_new_filename, loadSheet)
-        
-        request.session['data']={
+        l_filename = lfs.save(log_sheet_new_filename, logSheet)
+        data = {
             'driverId':request.POST.get('driverId'),
             'clientName':request.POST.get('clientName'),
             'truckNum':request.POST.get('truckNum'),
-            'startDateTime':request.POST.get('startDateTime'),
-            'endDateTime':request.POST.get('endDateTime'),
-            'loadSheet':load_sheet_new_filename,
+            'startTime':request.POST.get('startTime'),
+            'endTime':request.POST.get('endTime'),
+            'shiftDate':request.POST.get('shiftDate'),
+            'source':request.POST.get('source'),
+            'logSheet':log_sheet_new_filename,
             'shiftType':request.POST.get('shiftType'),
-            'numberOfLoads':request.POST.get('numberOfLoads'),
+            'numberOfLogs':request.POST.get('numberOfLogs'),
             'comments':request.POST.get('comments')
         }
         
-
+        request.session['data']= data
+        
+        # with open('extra.txt','a') as f:
+        #     f.writelines(data)
+        #     f.close()
+        
     request.session.set_expiry(60 *5)
     return redirect ('DriverSchedule_app:form2')
         
@@ -121,27 +149,30 @@ def createFormSession(request):
 def formsSave(request):
     
     driverId = request.session['data']['driverId']   
+    driverId = driverId.split('-')[0]
     clientName = request.session['data']['clientName'] 
     shiftType = request.session['data']['shiftType']
-    numberOfLoad = request.session['data']['numberOfLoads']
+    numberOfLog = request.session['data']['numberOfLogs']
     truckNo = request.session['data']['truckNum']             
-    startDateTime = request.session['data']['startDateTime']    
-    endDateTime = request.session['data']['endDateTime']    
-    loadSheet = request.session['data']['loadSheet']    
+    startTime = request.session['data']['startTime']    
+    endTime = request.session['data']['endTime']    
+    source = request.session['data']['source']    
+    shiftDate = request.session['data']['shiftDate']    
+    logSheet = request.session['data']['logSheet']    
     comment = request.session['data']['comments']    
     
-    temp_loadsheet = ''
+    temp_logSheet = ''
     Docket_no = []
     Docket_file = []
    
-    for i in range(1,int(numberOfLoad)+1):
+    for i in range(1,int(numberOfLog)+1):
         key = f"docketNumber[{i}]"
         docket_number = request.POST.get(key)
         Docket_no.append(docket_number)
         key_files = f"docketFile[{i}]"
         docket_files = request.FILES.get(key_files)
 
-        temp_loadsheet = temp_loadsheet + '-' + docket_number
+        temp_logSheet = temp_logSheet + '-' + docket_number
 
         if docket_files:
             # Specify the folder path where you want to save the file
@@ -156,23 +187,27 @@ def formsSave(request):
             pfs.save(docket_new_filename, docket_files)
             Docket_file.append(docket_new_filename)
         
-    temp_loadsheet =  time + '!_@' + temp_loadsheet[1:]
-    shutil.move('Temp_Load_Sheet/' + loadSheet, 'Final_Load_Sheet/'+temp_loadsheet) if not os.path.exists('Final_Load_Sheet/' + temp_loadsheet) else None
-
-    
+    temp_logSheet =  time + '!_@' + temp_logSheet[1:]
+    shutil.move('Temp_Load_Sheet/' + logSheet, 'Final_Load_Sheet/'+temp_logSheet) if not os.path.exists('Final_Load_Sheet/' + temp_logSheet) else None
     driver = Driver.objects.get(driverId=driverId)
+    source = Source.objects.get(sourceName=source)
+    
 
     trip = Trip(
         driverId=driver,
         clientName=clientName,
         shiftType=shiftType,
-        numberOfLoad=numberOfLoad,
+        numberOfLog=numberOfLog,
         truckNo=truckNo,
-        startDateTime=startDateTime,
-        endDateTime=endDateTime,
-        loadSheet=temp_loadsheet,  # Use the filename or None
-        comment=comment
+        startTime=startTime,
+        endTime=endTime,
+        logSheet=temp_logSheet,  # Use the filename or None
+        comment=comment,
+        source = source,
+        shiftDate = shiftDate
     )
+    # print(source)
+    # return HttpResponse(source)
     trip.save()
             
     for i in range(len(Docket_no)):
