@@ -10,7 +10,6 @@
   <link href="library/bootstrap-5/    .min.css" rel="stylesheet" /> {% endcomment %}
   <script src="library/bootstrap-5/bootstrap.bundle.min.js"></script>
   <script src="/static/js/vendor/bootstrap5/dselect.js"></script>
-  <!-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> -->
   <style>
     .errorMsg {
       font-size: 0.7rem;
@@ -217,8 +216,7 @@
       </div>
 
       <div class="mb-3">
-        <textarea placeholder="Comments" name="comments">
-{{ request.session.data.comments|default_if_none:'' }}</textarea>
+        <textarea placeholder="Comments" name="comments">{{ request.session.data.comments|default_if_none:'' }}</textarea>
       </div>
       <div class="row">
         <div class="form-footer">

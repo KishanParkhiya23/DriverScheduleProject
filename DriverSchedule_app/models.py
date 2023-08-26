@@ -81,3 +81,4 @@ class ClientTruckConnection(models.Model):
 
     def __str__(self):
         return str(self.truckNumber) + str(self.clientId)
+    

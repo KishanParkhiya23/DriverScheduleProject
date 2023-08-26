@@ -255,3 +255,5 @@ def saveFileForm(request):
     else:
         return Response({'status': '404', 'message': 'File not found'})
 
+def analysis(request):
+    return render(request,'admin/analysis.html')

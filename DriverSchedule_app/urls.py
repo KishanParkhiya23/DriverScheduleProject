@@ -10,6 +10,7 @@ urlpatterns = [
     path('get-driver-data/',views.getDriverData,name='get-driver-data'), 
     
     # Forms url  
+    path('analysis/',views.analysis,name='analysis'),
     path('getForm1/',views.getForm1,name='form1'),
     path('getForm2/',views.getForm2,name='form2'),
     path('getFileForm/',views.getFileForm,name='getFileForm'),
