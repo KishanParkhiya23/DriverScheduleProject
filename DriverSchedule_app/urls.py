@@ -10,15 +10,16 @@ urlpatterns = [
     path('get-driver-data/',views.getDriverData,name='get-driver-data'), 
     
     # Forms url  
-    path('analysis/',views.analysis,name='analysis'),
     path('getForm1/',views.getForm1,name='form1'),
     path('getForm2/',views.getForm2,name='form2'),
     path('getFileForm/',views.getFileForm,name='getFileForm'),
     path('saveFileForm/',views.saveFileForm,name='saveFileForm'),
-    
-    
     path('createFormSession/',views.createFormSession,name='createFormSession'),
-    
     path('formsSave/',views.formsSave,name='formsSave'),
+    
+    # Analysis paths
+    path('analysis/',views.analysisView,name='analysis'),
+    path('analysis/download/',views.downloadAnalysis,name='downloadAnalysis'),
+    
     
 ]
