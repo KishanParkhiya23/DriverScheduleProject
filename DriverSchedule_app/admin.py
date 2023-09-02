@@ -7,8 +7,9 @@ from .models import *
 
 class Trip_(admin.ModelAdmin):
 
-    list_display = ["driverId", "clientName", 'truckNo',"shiftType", "startTime", 'endTime',"numberOfLog", "logSheet","source","shiftDate"]
+    list_display = ['verified',"driverId", "clientName", 'truckNo',"shiftType", "startTime", 'endTime',"numberOfLog", "logSheet","source","shiftDate"]
     # search_fields = ["driverId", 'clientName']
+    list_filter = ('shiftType', 'clientName')
 
 admin.site.register(Trip,Trip_)
 
@@ -21,7 +22,7 @@ admin.site.register(Docket, Docket_)
 
 class Client_(admin.ModelAdmin):
 
-    list_display = ["clientId","name"]
+    list_display = ["clientId","name",'docketGiven']
     search_fields = ["clientId","name"]
 
 admin.site.register(Client, Client_)
