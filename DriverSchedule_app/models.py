@@ -14,7 +14,7 @@ class Driver(models.Model):
     # driverId = models.IntegerField(primary_key=True, unique=True, default=generate_4digit_unique_key, editable=False)
     driverId = models.IntegerField(primary_key=True, unique=True)
     name = models.CharField(max_length=200)
-    phone = models.CharField(max_length=200)
+    phone = models.CharField(validators=[MaxValueValidator(9999999999),MinValueValidator(1000000000)],max_length=100)
     email = models.CharField(max_length=200)
     password = models.CharField(max_length=50)
 
@@ -25,6 +25,8 @@ class Driver(models.Model):
 class Client(models.Model):
     clientId = models.AutoField(primary_key=True)
     name = models.CharField(max_length=200)
+    docketGiven = models.BooleanField(default=False)
+    
 
     def __str__(self) -> str:
         return str(self.name)
@@ -39,6 +41,7 @@ class Source(models.Model):
 
 
 class Trip(models.Model):
+    verified = models.BooleanField(default=False)
     driverId = models.ForeignKey(Driver, on_delete=models.CASCADE)
     clientName = models.CharField(max_length=200)
     shiftType = models.CharField(max_length=200)
@@ -50,6 +53,9 @@ class Trip(models.Model):
     endTime = models.CharField(max_length=200)
     logSheet = models.CharField(max_length=200)
     comment = models.CharField(max_length=200)
+    dockets =  models.JSONField(default=None)
+
+    
 
     def __str__(self) -> str:
         return str(self.id)
@@ -66,8 +72,7 @@ class Docket(models.Model):
 
 
 class AdminTruck(models.Model):
-    adminTruckNumber = models.PositiveIntegerField(
-        validators=[MaxValueValidator(99999), MinValueValidator(10000)], unique=True)
+    adminTruckNumber = models.PositiveIntegerField(validators=[MaxValueValidator(999999),MinValueValidator(100000)], unique=True)
     
     def __str__(self):
         return str(self.adminTruckNumber)
@@ -76,8 +81,7 @@ class AdminTruck(models.Model):
 class ClientTruckConnection(models.Model):
     truckNumber = models.ForeignKey(AdminTruck, on_delete=models.CASCADE)
     clientId = models.ForeignKey(Client, on_delete=models.CASCADE)
-    clientTruckId = models.PositiveIntegerField(primary_key=True, validators=[
-                                                MaxValueValidator(999999), MinValueValidator(100000)])
+    clientTruckId = models.PositiveIntegerField(primary_key=True,validators=[MaxValueValidator(999999)])
 
     def __str__(self):
         return str(self.truckNumber) + str(self.clientId)

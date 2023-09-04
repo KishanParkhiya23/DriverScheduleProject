@@ -21,5 +21,6 @@ urlpatterns = [
     path('analysis/',views.analysisView,name='analysis'),
     path('analysis/download/',views.downloadAnalysis,name='downloadAnalysis'),
     
-    
+    # Get truck numbers using client name
+    path('getTrucks/',views.getTrucks,name="getTrucks"),
 ]

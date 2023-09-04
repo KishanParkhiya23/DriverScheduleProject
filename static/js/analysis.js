@@ -96,7 +96,7 @@ $(document).ready(function () {
       $.ajax({
         type: "POST",
         // url: "{% url 'DriverSchedule_app:downloadAnalysis' %}", // Replace with the actual URL
-        url: "http://127.0.0.1:8000/DriverSchedule_app/analysis/download/", // Replace with the actual URL
+        url: "/DriverSchedule_app/analysis/download/", // Replace with the actual URL
         data: data,
         beforeSend: function (xhr) {
           xhr.setRequestHeader("X-CSRFToken", csrftoken);
