@@ -3,6 +3,7 @@
 <head>
   <title>Driver details form-1</title>
   <!-- Include Bootstrap CSS -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="/static/css/vendor/bootstrap5/bootstrap5.css" />
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/static/css/form.css" />
@@ -36,14 +37,46 @@
       width: 100%;
     }
 
-    /* #driverId{
-      display: block!important;
-    }*/
+    .form-element {
+      margin-bottom: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        font-size: 14px;
+      }
+      .container {
+        padding: 0 15px;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .col-md-4 {
+        flex-basis: 100%;
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        font-size: 14px;
+      }
+    }
+
+    .responsive-btn {
+      max-width: 100%;
+      margin: 0 auto;
+    }
+
+    /* #signUpForm {
+      max-width: 100%;
+      padding: 15px;
+    } */
   </style>
 </head>
 
 <body>
-  <div class="container" id="mainCont">
+  <div class="container-fluid" id="mainCont">
     <form id="signUpForm" action="{% url 'DriverSchedule_app:createFormSession' %}" method="POST"
       enctype="multipart/form-data">
       {% csrf_token %}
@@ -53,7 +86,7 @@
       </div>
       <!-- Driverid, Clientid and shift type -->
       <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-4 col-12">
           <div class="step">
             <div class="mb-3">
               <label for="driverId">Driver ID :</label>
@@ -77,7 +110,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4 col-12">
           <div class="step">
             <div class="mb-3">
               <label for="clientId">Client Name :</label>
@@ -92,7 +125,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4 col-12">
           <div class="step">
             <div class="mb-3">
               <label for="shiftType">Shift Type :</label>
@@ -112,7 +145,7 @@
 
       <!-- Number of Logs and truck number -->
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-6 col-12">
           <div class="step">
             <div class="mb-3">
               <label for="numberOfLogs">Number of load :</label>
@@ -123,7 +156,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6 col-12">
           <div class="step">
             <div class="mb-3">
               <label for="numberOfLogs">Truck No :</label>
@@ -152,7 +185,7 @@
       <!-- ---------------------------------------------------------------------------------------------------------- -->
       <!-- source and shift date number -->
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-6 col-12">
           <div class="step">
             <div class="mb-3">
               <label for="shiftDate">Shift date:</label>
@@ -162,7 +195,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6 col-12">
           <div class="step">
             <div class="mb-3">
               <label for="source">Source :</label>
@@ -185,7 +218,7 @@
 
       <!-- Startdate and enddate and logSheet-->
       <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-4 col-12">
           <div class="step">
             <div class="mb-3">
               <label for="startTime">Start time :</label>
@@ -196,7 +229,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4 col-12">
           <div class="step">
             <div class="mb-3">
               <label for="endTime">End time :</label>
@@ -207,7 +240,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4 col-12">
           <div class="step">
             <div class="mb-3">
               <label for="logSheet">Upload Log Sheet :</label>
@@ -220,12 +253,12 @@
       </div>
 
       <div class="mb-3">
-        <textarea placeholder="Comments"
-          name="comments">{{ request.session.data.comments|default_if_none:'' }}</textarea>
+        <textarea placeholder="Comments" name="comments"
+          class="form-control">{{ request.session.data.comments|default_if_none:'' }}</textarea>
       </div>
       <div class="row">
         <div class="form-footer">
-          <input type="submit" id="nextBtn" value="Next" class="w-25 d-block ms-auto" />
+          <input type="submit" id="nextBtn" value="Next" class="btn btn-primary  btn-lg mx-auto responsive-btn" />
         </div>
       </div>
     </form>

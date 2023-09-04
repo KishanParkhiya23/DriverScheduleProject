@@ -123,6 +123,7 @@ body {
     text-align: center;
     text-decoration: none;
     cursor: pointer;
+    float: right!important;
 }
 
 #signUpForm .form-footer button:hover {
@@ -143,4 +144,14 @@ body {
 
 .text-basic {
     color: #009688 !important;
+}
+@media (max-width: 768px) {
+    /* .container {
+        padding: 0 15px;
+    } */
+
+    #signUpForm{
+        max-width: 100%;
+        padding: 20px;
+    }
 }
