@@ -22,8 +22,8 @@
     }
 
     .isInvalid {
-      border: 1px solid rgb(255, 0, 0);
-      border-radius: 7px;
+      border: 1px solid rgb(255, 0, 0) !important;
+      border-radius: 7px !important;
     }
 
     body {
@@ -83,13 +83,28 @@
       max-width: 100%;
       padding: 15px;
     } */
+
+
+    .select2-container .select2-selection--single {
+      height: 45px !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+      padding: 7px 14px !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+      top: 7px !important;
+      right: 10px !important;
+    }
   </style>
 
 </head>
 
 <body>
   <div class="container-fluid" id="mainCont">
-    <form id="signUpForm" action="{% url 'DriverSchedule_app:createFormSession' %}" method="POST"
+    
+    <form id="signUpForm" action="#" method="POST"
       enctype="multipart/form-data">
       {% csrf_token %}
       <div class="form-header d-flex mb-4">
@@ -172,20 +187,8 @@
           <div class="step">
             <div class="mb-3">
               <label for="numberOfLoads">Truck No :</label>
-              <!-- <input type="text" id="searchInput" placeholder="Search..."> -->
-              <select name="truckNum" class="form-select" id="truckNum">
-                <option value="" disabled selected>Select Truck No</option>
-
-                {% for admin_truck_nos in admin_truck_no %}
-                <option value="{{ admin_truck_nos }}">
-                  {{ admin_truck_nos }}
-                </option>
-                {% endfor %} {% for client_truck_nos in client_truck_no %}
-                <option value="{{ client_truck_nos }}">
-                  {{ client_truck_nos }}
-                </option>
-                {% endfor %}
-
+              <select id="truckNum" class="js-select2 form-control" disabled>
+                <option value="">Select an Item</option>
               </select>
               <i class="fa" aria-hidden="true"></i>
               <li class="errorMsg"></li>
@@ -287,7 +290,10 @@
   <script src="https://code.jquery.com/jquery-3.7.0.min.js"
     integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
   <!-- select2 for searching dropdown -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"
+    integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="{% static 'js/form1.js' %}"></script>
 
 </body>

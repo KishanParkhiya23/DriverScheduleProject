@@ -114,7 +114,7 @@ def getForm2(request):
 
 @csrf_protect
 @api_view(['POST'])
-def createFormSession(request):
+def createFormSession(request, truckNum):
 
     logSheet = request.FILES.get('logSheet')
 
@@ -131,7 +131,8 @@ def createFormSession(request):
         data = {
             'driverId': request.POST.get('driverId'),
             'clientName': request.POST.get('clientName'),
-            'truckNum': request.POST.get('truckNum'),
+            # 'truckNum': request.POST.get('truckNum'),
+            'truckNum': truckNum.split('-')[0],
             'startTime': request.POST.get('startTime'),
             'endTime': request.POST.get('endTime'),
             'shiftDate': request.POST.get('shiftDate'),
@@ -148,7 +149,8 @@ def createFormSession(request):
         #     f.writelines(data)
         #     f.close()
 
-    request.session.set_expiry(60 * 5)
+    # request.session.set_expiry(60 * 5)
+    request.session['data'] = timezone.now() + timezone.timedelta(minutes=5)
     return redirect('DriverSchedule_app:form2')
 
 
@@ -162,6 +164,7 @@ def formsSave(request):
     shiftType = request.session['data']['shiftType']
     numberOfLoads = request.session['data']['numberOfLoads']
     truckNo = request.session['data']['truckNum']
+    print(truckNo)
     startTime = request.session['data']['startTime']
     endTime = request.session['data']['endTime']
     source = request.session['data']['source']
@@ -342,14 +345,26 @@ def downloadAnalysis(request):
 @api_view(['POST'])
 def getTrucks(request):
     clientName = request.POST.get('clientName')
+    # clientName = request.GET.get('clientName')
     client = Client.objects.get(name=clientName)
     truckList = []
     truck_connections = ClientTruckConnection.objects.filter(
         clientId=client.clientId)
+    docket = client.docketGiven
+
     for truck_connection in truck_connections:
         truckList.append(str(truck_connection.truckNumber) +
                          '-' + str(truck_connection.clientTruckId))
         # print(truck_connection.truckNumber)
         # print(truck_connection.clientTruckId)
+    return JsonResponse({'status': True, 'trucks': truckList, 'docket': docket})
 
-    return JsonResponse({'status': True, 'trucks': truckList})
+
+@csrf_protect
+@api_view(['POST'])
+def clientDocket(request):
+    clientName = request.POST.get('clientName')
+    client = Client.objects.get(name=clientName)
+    docket = client.docketGiven
+    print(docket)
+    return JsonResponse({'status': True, 'docket': docket})

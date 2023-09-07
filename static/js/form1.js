@@ -1,20 +1,44 @@
 const csrftoken = $("[name=csrfmiddlewaretoken]").val();
+
 if ($(window).width() < 1000) {
     $("body #mainCont").addClass("container-fluid");
     $("body #mainCont").removeClass("container");
 } else {
 }
 
-document
-    .getElementById("nextBtn")
-    .addEventListener("click", function (event) {
-        event.preventDefault();
+$("#signUpForm").on("submit", function (event) {
+    // Prevent the default form submission
+    event.preventDefault();
 
-        if (checkData()) {
-            $("#signUpForm").submit();
-        }
+    // Check if the form data is valid before modifying the action
+    if (!checkData()) {
+        // Display an error message to the user
+        $("#errorDiv").text("Please fill in all required fields correctly.");
+        return false; // Prevent form submission
+    }
 
-    });
+    // If data is valid, clear any previous error messages
+    $("#errorDiv").empty();
+
+    let truckNumElement = document.getElementById("truckNum");
+    let selectedValue = truckNumElement.options[truckNumElement.selectedIndex].text;
+
+    // Construct the URL for the form action using the selected value
+    let url = "/DriverSchedule_app/createFormSession/" + selectedValue + '/';
+
+    // Update the form action
+    $(this).attr("action", url);
+
+    // The form will now submit with the modified action URL
+    // If you want to redirect the user after successful submission, you can use window.location.href
+    window.location.href = url;
+
+    // Return true to allow form submission
+    return true;
+});
+
+
+
 
 var driverId = document.getElementById("driverId");
 var clientId = document.getElementById("clientId");
@@ -84,11 +108,13 @@ function checkData() {
     }
     if (truckNumValue == "") {
         setError(truckNum, "Truck number can't be left blank.");
-        $("#truckNum").next('.dselect-wrapper').addClass('isInvalid')
+        $(".select2-selection").eq(0).addClass('isInvalid');
+        // $("#truckNum").next('.dselect-wrapper').addClass('isInvalid')
 
         isValid = false;
     } else {
         setSuccess(truckNum);
+        $(".select2-selection").eq(0).removeClass('isInvalid');
     }
 
     if (shiftDateValue == "") {
@@ -170,12 +196,6 @@ dselect(select_box_element, {
     search: true,
 });
 
-var select_box_element = document.querySelector("#truckNum");
-
-dselect(select_box_element, {
-    search: true,
-});
-
 if (drivers) {
     var driverIdSelect = document.querySelector("#driverId");
 
@@ -199,77 +219,37 @@ numberOfLoadsInput.addEventListener('input', function () {
     this.value = value;
 });
 
+$(".js-select2").select2({
+    width: '100%'
+});
 
 // get truck number  using client name
-$("#clientId").on('change', function () {
-    // var searchableDropdown = $('#truckNum');
-    // var searchInput = $('#searchInput');
+$(".select2-selection").eq(1).hide();
 
-    // function populateDropdown(data) {
-    //     searchableDropdown.empty();
-    //     searchableDropdown.append($('<option>', {
-    //         value: null,
-    //         text: null,
-    //         selected: true,
-    //         disabled: true
-    //     }));
-    //     $.each(data, function (index, option) {
-    //         searchableDropdown.append($('<option>', {
-    //             value: option,
-    //             text: option
-    //         }));
-    //     });
-    // }
-    // function filterOptions() {
-    //     var searchText = searchInput.val().toLowerCase();
-    //     searchableDropdown.find('option').each(function () {
-    //         var optionText = $(this).text().toLowerCase();
-    //         $(this).toggle(optionText.indexOf(searchText) > -1);
-    //     });
-    // }
+$("#clientId").on("change", function () {
+    let clientId = $(this).val()
 
-    // $.ajax({
-    //     type: "POST",
-    //     // url: "{% url 'DriverSchedule_app:downloadAnalysis' %}", // Replace with the actual URL
-    //     url: "/DriverSchedule_app/getTrucks/", // Replace with the actual URL
-    //     data: {
-    //         clientName: $(this).val()
-    //     },
-    //     beforeSend: function (xhr) {
-    //         xhr.setRequestHeader("X-CSRFToken", csrftoken);
-    //     },
-    //     success: function (data) {
-    //         var selectOptions = $('#truckNum');
-    //         // populateDropdown(data.trucks)
-    //         var options = ''
+    if (clientId) {
+        $("#truckNum").prop('disabled', false);
+        $("#truckNum").html('<option value="">Loading...</option>');
+        $.ajax({
+            type: "POST",
+            url: "/DriverSchedule_app/getTrucks/",
+            data: {
+                clientName: $(this).val(),
+            },
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            },
+            success: function (data) {
 
-    //         $.each(data.trucks, function (index, option) {
-    //             options += `<button class="dropdown-item" data-dselect-value="${option}" type="button" onclick="dselectUpdate(this, 'dselect-wrapper', 'form-select')">${option}</button>`
-    //         });
+                $("#truckNum").html('<option value="">Select an Item</option>');
+                (data.trucks).forEach(function (item) {
+                    $("#truckNum").append('<option value="' + item + '">' + item + '</option>');
+                });
+                $("#truckNum").trigger('change.select2');
+            }
+        });
+    }
 
-    //         let append_data =
-    //             `<div class="dropdown dselect-wrapper ">
-    //                 <button class="form-select" data-dselect-text="" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-    //                     <span class="dselect-placeholder">Select Truck No</span>
-    //                 </button>
-    //                 <div class="dropdown-menu" style="">
-    //                     <div class="d-flex flex-column">
-    //                         <input onkeydown="return event.key !== 'Enter'" onkeyup="dselectSearch(event, this, 'dselect-wrapper', 'form-select', false)" type="text" class="form-control" placeholder="Search" autofocus="">
-    //                         <div class="dselect-items" style="max-height:360px;overflow:auto">
-    //                             <button hidden="" class="dropdown-item active" data-dselect-value="" type="button" onclick="dselectUpdate(this, 'dselect-wrapper', 'form-select')">Select Truck No</button>
-    //                             ${options}
-    //                         </div>
-    //                         <div class="dselect-no-results d-none">No results found</div>
-    //                     </div>
-    //                 </div>            
-    //             </div>`
-    //         $("#truckNum").next('.dselect-placeholder').remove();
-    //         $("#truckNum").after(append_data);
-
-    //         console.log(data.trucks); // Process the data received from the server
-    //     },
-    // });
-    // searchInput.on('input', function () {
-    //     filterOptions();
-    // });
 });

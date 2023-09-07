@@ -54,12 +54,12 @@ class AdminTruck_(admin.ModelAdmin):
 admin.site.register(AdminTruck, AdminTruck_)
 
 
-# class ClientTruckConnection_(admin.ModelAdmin):
+class ClientTruckConnection_(admin.ModelAdmin):
 
-#     list_display = ["truckNumber", "clientId", 'clientTruckId']
-#     search_fields = ['clientTruckId']
+    list_display = ["truckNumber", "clientId", 'clientTruckId']
+    search_fields = ['clientTruckId']
 
-# admin.site.register(ClientTruckConnection, ClientTruckConnection_)
+admin.site.register(ClientTruckConnection, ClientTruckConnection_)
 
 class Driver_(admin.ModelAdmin):
 
