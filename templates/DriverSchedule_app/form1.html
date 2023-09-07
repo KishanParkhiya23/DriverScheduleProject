@@ -11,6 +11,8 @@
   <link href="library/bootstrap-5/    .min.css" rel="stylesheet" /> {% endcomment %}
   <script src="library/bootstrap-5/bootstrap.bundle.min.js"></script>
   <script src="/static/js/vendor/bootstrap5/dselect.js"></script>
+  <!-- select2 for searching dropdown -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
   <style>
     .errorMsg {
       font-size: 0.7rem;
@@ -41,12 +43,21 @@
       margin-bottom: 1rem;
     }
 
+    .mybtn {
+      width: 25% !important;
+    }
+
     @media (max-width: 768px) {
       body {
         font-size: 14px;
       }
+
       .container {
         padding: 0 15px;
+      }
+
+      .mybtn {
+        width: 100% !important;
       }
     }
 
@@ -73,6 +84,7 @@
       padding: 15px;
     } */
   </style>
+
 </head>
 
 <body>
@@ -148,9 +160,9 @@
         <div class="col-md-6 col-12">
           <div class="step">
             <div class="mb-3">
-              <label for="numberOfLogs">Number of load :</label>
-              <input type="number" min="1" id="numberOfLogs" name="numberOfLogs"
-                value="{{ request.session.data.numberOfLogs|default_if_none:'' }}" />
+              <label for="numberOfLoads">Number of load :</label>
+              <input type="number" min="1" id="numberOfLoads" name="numberOfLoads"
+                value="{{ request.session.data.numberOfLoads|default_if_none:'' }}" />
               <i class="fa" aria-hidden="true"></i>
               <li class="errorMsg"></li>
             </div>
@@ -159,13 +171,12 @@
         <div class="col-md-6 col-12">
           <div class="step">
             <div class="mb-3">
-              <label for="numberOfLogs">Truck No :</label>
+              <label for="numberOfLoads">Truck No :</label>
               <!-- <input type="text" id="searchInput" placeholder="Search..."> -->
               <select name="truckNum" class="form-select" id="truckNum">
                 <option value="" disabled selected>Select Truck No</option>
-                <option value="1234">1234</option>
 
-                <!-- {% for admin_truck_nos in admin_truck_no %}
+                {% for admin_truck_nos in admin_truck_no %}
                 <option value="{{ admin_truck_nos }}">
                   {{ admin_truck_nos }}
                 </option>
@@ -173,7 +184,7 @@
                 <option value="{{ client_truck_nos }}">
                   {{ client_truck_nos }}
                 </option>
-                {% endfor %} -->
+                {% endfor %}
 
               </select>
               <i class="fa" aria-hidden="true"></i>
@@ -258,7 +269,7 @@
       </div>
       <div class="row">
         <div class="form-footer">
-          <input type="submit" id="nextBtn" value="Next" class="btn btn-primary  btn-lg mx-auto responsive-btn" />
+          <input type="submit" id="nextBtn" value="Next" class="btn btn-primary  btn-lg   responsive-btn mybtn" />
         </div>
       </div>
     </form>
@@ -272,8 +283,11 @@
   <script src="/static/js/vendor/jquery/jquery-3.7.0.min.js"></script> {% endcomment %}
   <script src="/static/js/vendor/jquery/jquery.validate.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
   <script src="https://code.jquery.com/jquery-3.7.0.min.js"
     integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+  <!-- select2 for searching dropdown -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
   <script src="{% static 'js/form1.js' %}"></script>
 
 </body>

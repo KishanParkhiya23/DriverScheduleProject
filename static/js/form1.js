@@ -19,7 +19,7 @@ document
 var driverId = document.getElementById("driverId");
 var clientId = document.getElementById("clientId");
 var shiftType = document.getElementById("shiftType");
-var numberOfLogs = document.getElementById("numberOfLogs");
+var numberOfLoads = document.getElementById("numberOfLoads");
 var truckNum = document.getElementById("truckNum");
 var source = document.getElementById("source");
 var shiftDate = document.getElementById("shiftDate");
@@ -32,7 +32,7 @@ function checkData() {
     var driverIdValue = driverId.value.trim();
     var clientIdValue = clientId.value.trim();
     var shiftTypeValue = shiftType.value.trim();
-    var numberOfLogsValue = numberOfLogs.value.trim();
+    var numberOfLoadsValue = numberOfLoads.value.trim();
     var truckNumValue = truckNum.value.trim();
     var sourceValue = source.value.trim();
     var shiftDateValue = shiftDate.value.trim();
@@ -76,11 +76,11 @@ function checkData() {
     } else {
         setSuccess(shiftType);
     }
-    if (numberOfLogsValue == "") {
-        setError(numberOfLogs, "Number of loads can't be empty.");
+    if (numberOfLoadsValue == "") {
+        setError(numberOfLoads, "Number of loads can't be empty.");
         isValid = false;
     } else {
-        setSuccess(numberOfLogs);
+        setSuccess(numberOfLoads);
     }
     if (truckNumValue == "") {
         setError(truckNum, "Truck number can't be left blank.");
@@ -185,10 +185,10 @@ if (drivers) {
 }
 
 // Get the input element
-const numberOfLogsInput = document.getElementById('numberOfLogs');
+const numberOfLoadsInput = document.getElementById('numberOfLoads');
 
 // Add an event listener for input changes
-numberOfLogsInput.addEventListener('input', function () {
+numberOfLoadsInput.addEventListener('input', function () {
     // Remove leading zeros
     this.value = this.value.replace(/^1+/, '');
 
@@ -228,47 +228,47 @@ $("#clientId").on('change', function () {
     //     });
     // }
 
-    $.ajax({
-        type: "POST",
-        // url: "{% url 'DriverSchedule_app:downloadAnalysis' %}", // Replace with the actual URL
-        url: "/DriverSchedule_app/getTrucks/", // Replace with the actual URL
-        data: {
-            clientName: $(this).val()
-        },
-        beforeSend: function (xhr) {
-            xhr.setRequestHeader("X-CSRFToken", csrftoken);
-        },
-        success: function (data) {
-            var selectOptions = $('#truckNum');
-            // populateDropdown(data.trucks)
-            var options = ''
+    // $.ajax({
+    //     type: "POST",
+    //     // url: "{% url 'DriverSchedule_app:downloadAnalysis' %}", // Replace with the actual URL
+    //     url: "/DriverSchedule_app/getTrucks/", // Replace with the actual URL
+    //     data: {
+    //         clientName: $(this).val()
+    //     },
+    //     beforeSend: function (xhr) {
+    //         xhr.setRequestHeader("X-CSRFToken", csrftoken);
+    //     },
+    //     success: function (data) {
+    //         var selectOptions = $('#truckNum');
+    //         // populateDropdown(data.trucks)
+    //         var options = ''
 
-            $.each(data.trucks, function (index, option) {
-                options += `<button class="dropdown-item" data-dselect-value="${option}" type="button" onclick="dselectUpdate(this, 'dselect-wrapper', 'form-select')">${option}</button>`
-            });
+    //         $.each(data.trucks, function (index, option) {
+    //             options += `<button class="dropdown-item" data-dselect-value="${option}" type="button" onclick="dselectUpdate(this, 'dselect-wrapper', 'form-select')">${option}</button>`
+    //         });
 
-            let append_data =
-                `<div class="dropdown dselect-wrapper ">
-                    <button class="form-select" data-dselect-text="" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <span class="dselect-placeholder">Select Truck No</span>
-                    </button>
-                    <div class="dropdown-menu" style="">
-                        <div class="d-flex flex-column">
-                            <input onkeydown="return event.key !== 'Enter'" onkeyup="dselectSearch(event, this, 'dselect-wrapper', 'form-select', false)" type="text" class="form-control" placeholder="Search" autofocus="">
-                            <div class="dselect-items" style="max-height:360px;overflow:auto">
-                                <button hidden="" class="dropdown-item active" data-dselect-value="" type="button" onclick="dselectUpdate(this, 'dselect-wrapper', 'form-select')">Select Truck No</button>
-                                ${options}
-                            </div>
-                            <div class="dselect-no-results d-none">No results found</div>
-                        </div>
-                    </div>            
-                </div>`
-            $("#truckNum").next('.dselect-placeholder').remove();
-            $("#truckNum").after(append_data);
+    //         let append_data =
+    //             `<div class="dropdown dselect-wrapper ">
+    //                 <button class="form-select" data-dselect-text="" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    //                     <span class="dselect-placeholder">Select Truck No</span>
+    //                 </button>
+    //                 <div class="dropdown-menu" style="">
+    //                     <div class="d-flex flex-column">
+    //                         <input onkeydown="return event.key !== 'Enter'" onkeyup="dselectSearch(event, this, 'dselect-wrapper', 'form-select', false)" type="text" class="form-control" placeholder="Search" autofocus="">
+    //                         <div class="dselect-items" style="max-height:360px;overflow:auto">
+    //                             <button hidden="" class="dropdown-item active" data-dselect-value="" type="button" onclick="dselectUpdate(this, 'dselect-wrapper', 'form-select')">Select Truck No</button>
+    //                             ${options}
+    //                         </div>
+    //                         <div class="dselect-no-results d-none">No results found</div>
+    //                     </div>
+    //                 </div>            
+    //             </div>`
+    //         $("#truckNum").next('.dselect-placeholder').remove();
+    //         $("#truckNum").after(append_data);
 
-            console.log(data.trucks); // Process the data received from the server
-        },
-    });
+    //         console.log(data.trucks); // Process the data received from the server
+    //     },
+    // });
     // searchInput.on('input', function () {
     //     filterOptions();
     // });

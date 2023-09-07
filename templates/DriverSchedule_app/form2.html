@@ -21,6 +21,11 @@
                 width: 100%;
             }
         }
+        @media (max-width: 308px) {
+.mybtn{
+    width: 100px;
+}
+        }
     </style>
 </head>
 
@@ -64,8 +69,10 @@
             </div> -->
             <div class="row">
                 <div class="form-footer text-end">
-                    <a href="{% url 'DriverSchedule_app:form1' %}" id="prevBtn" class="d-inline-block w-25">Previous</a>
-                    <input type="submit" id="nextBtn" value="Submit" class="d-inline w-25 ms-auto">
+                    <div class="d-flex flex-wrap">
+                    <a href="{% url 'DriverSchedule_app:form1' %}" id="prevBtn" class="d-inline-block mx-1 mybtn">Previous</a>
+                    <input type="submit" id="nextBtn" value="Submit" class="d-inline mx-1   mybtn">
+                </div>
                 </div>
             </div>
         </form>

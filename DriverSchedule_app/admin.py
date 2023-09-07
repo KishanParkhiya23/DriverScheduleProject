@@ -5,20 +5,26 @@ from .models import *
 
 
 
+class DocketInline(admin.TabularInline):
+    model = Docket
+    extra = 0
+    
 class Trip_(admin.ModelAdmin):
 
-    list_display = ['verified',"driverId", "clientName", 'truckNo',"shiftType", "startTime", 'endTime',"numberOfLog", "logSheet","source","shiftDate"]
+    list_display = ['verified',"driverId", "clientName", 'truckNo',"shiftType", "startTime", 'endTime',"numberOfLoads", "logSheet","source","shiftDate"]
     # search_fields = ["driverId", 'clientName']
     list_filter = ('shiftType', 'clientName')
+    
+    inlines = [DocketInline]
 
 admin.site.register(Trip,Trip_)
 
-class Docket_(admin.ModelAdmin):
+# class Docket_(admin.ModelAdmin):
 
-    list_display = ["docketId","tripId", 'docketNumber', 'docketFile']
-    search_fields = ["docketNumber"]
+#     list_display = ["docketId","tripId", 'docketNumber', 'docketFile']
+#     search_fields = ["docketNumber"]
 
-admin.site.register(Docket, Docket_)
+# admin.site.register(Docket, Docket_)
 
 class Client_(admin.ModelAdmin):
 
@@ -34,20 +40,26 @@ class Source_(admin.ModelAdmin):
 
 admin.site.register(Source, Source_)
 
+class ClientTruckInline(admin.TabularInline):
+    model = ClientTruckConnection
+    extra = 0
+    
 class AdminTruck_(admin.ModelAdmin):
 
     list_display = ["adminTruckNumber"]
     search_fields = ["adminTruckNumber"]
 
+    inlines = [ClientTruckInline]
+    
 admin.site.register(AdminTruck, AdminTruck_)
 
 
-class ClientTruckConnection_(admin.ModelAdmin):
+# class ClientTruckConnection_(admin.ModelAdmin):
 
-    list_display = ["truckNumber", "clientId", 'clientTruckId']
-    search_fields = ['clientTruckId']
+#     list_display = ["truckNumber", "clientId", 'clientTruckId']
+#     search_fields = ['clientTruckId']
 
-admin.site.register(ClientTruckConnection, ClientTruckConnection_)
+# admin.site.register(ClientTruckConnection, ClientTruckConnection_)
 
 class Driver_(admin.ModelAdmin):
 

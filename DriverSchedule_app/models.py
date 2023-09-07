@@ -1,5 +1,7 @@
 from django.db import models
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator,RegexValidator
+from datetime import date
+
 # def generate_4digit_unique_key():
 #     try:
 #         latest_data = Driver.objects.latest('Uniqeid')
@@ -14,7 +16,12 @@ class Driver(models.Model):
     # driverId = models.IntegerField(primary_key=True, unique=True, default=generate_4digit_unique_key, editable=False)
     driverId = models.IntegerField(primary_key=True, unique=True)
     name = models.CharField(max_length=200)
-    phone = models.CharField(validators=[MaxValueValidator(9999999999),MinValueValidator(1000000000)],max_length=100)
+    phone = models.CharField(max_length=100, validators=[
+        RegexValidator(
+            regex=r'^\d{10}$',  # Match a 10-digit number
+            message='Phone number must be a 10-digit number without any special characters or spaces.',
+        ),
+    ])
     email = models.CharField(max_length=200)
     password = models.CharField(max_length=50)
 
@@ -45,7 +52,7 @@ class Trip(models.Model):
     driverId = models.ForeignKey(Driver, on_delete=models.CASCADE)
     clientName = models.CharField(max_length=200)
     shiftType = models.CharField(max_length=200)
-    numberOfLog = models.IntegerField()
+    numberOfLoads = models.IntegerField()
     truckNo = models.IntegerField()
     shiftDate = models.DateTimeField()
     source = models.ForeignKey(Source, on_delete=models.PROTECT)
@@ -53,7 +60,7 @@ class Trip(models.Model):
     endTime = models.CharField(max_length=200)
     logSheet = models.CharField(max_length=200)
     comment = models.CharField(max_length=200)
-    dockets =  models.JSONField(default=None)
+    dockets =  models.CharField(max_length=50)
 
     
 
@@ -81,7 +88,9 @@ class AdminTruck(models.Model):
 class ClientTruckConnection(models.Model):
     truckNumber = models.ForeignKey(AdminTruck, on_delete=models.CASCADE)
     clientId = models.ForeignKey(Client, on_delete=models.CASCADE)
-    clientTruckId = models.PositiveIntegerField(primary_key=True,validators=[MaxValueValidator(999999)])
+    clientTruckId = models.PositiveIntegerField(validators=[MaxValueValidator(999999)],unique=True)
+    startDate = models.DateField(default=date.today())  
+    endDate = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return str(self.truckNumber) + str(self.clientId)

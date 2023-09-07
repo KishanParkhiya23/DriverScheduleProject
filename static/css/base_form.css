@@ -10947,7 +10947,7 @@ header.masthead {
   padding-bottom: 6rem;
   text-align: center;
   color: #fff;
-  background-image: url("https://pnrgroup.in/wp-content/uploads/2019/06/bnr.jpg");
+  background-image: url("/static/img/base_bg.jpg");
   background-repeat: no-repeat;
   background-attachment: scroll;
   background-position: center center;

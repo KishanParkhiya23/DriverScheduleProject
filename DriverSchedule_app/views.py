@@ -105,7 +105,7 @@ def getForm1(request):
 def getForm2(request):
     if 'data' in request.session:
         params = {
-            'loads': [i+1 for i in range(int(request.session['data'].get('numberOfLogs')))]
+            'loads': [i+1 for i in range(int(request.session['data'].get('numberOfLoads')))]
         }
         return render(request, 'DriverSchedule_app/form2.html', params)
     else:
@@ -138,7 +138,7 @@ def createFormSession(request):
             'source': request.POST.get('source'),
             'logSheet': log_sheet_new_filename,
             'shiftType': request.POST.get('shiftType'),
-            'numberOfLogs': request.POST.get('numberOfLogs'),
+            'numberOfLoads': request.POST.get('numberOfLoads'),
             'comments': request.POST.get('comments')
         }
 
@@ -160,7 +160,7 @@ def formsSave(request):
     driverId = driverId.split('-')[0]
     clientName = request.session['data']['clientName']
     shiftType = request.session['data']['shiftType']
-    numberOfLog = request.session['data']['numberOfLogs']
+    numberOfLoads = request.session['data']['numberOfLoads']
     truckNo = request.session['data']['truckNum']
     startTime = request.session['data']['startTime']
     endTime = request.session['data']['endTime']
@@ -173,7 +173,7 @@ def formsSave(request):
     Docket_no = []
     Docket_file = []
 
-    for i in range(1, int(numberOfLog)+1):
+    for i in range(1, int(numberOfLoads)+1):
         key = f"docketNumber[{i}]"
         docket_number = request.POST.get(key)
         Docket_no.append(docket_number)
@@ -206,7 +206,7 @@ def formsSave(request):
         driverId=driver,
         clientName=clientName,
         shiftType=shiftType,
-        numberOfLog=numberOfLog,
+        numberOfLoads=numberOfLoads,
         truckNo=truckNo,
         startTime=startTime,
         endTime=endTime,
@@ -321,7 +321,7 @@ def downloadAnalysis(request):
                 'driverId': trip.driverId.driverId,
                 'clientName': trip.clientName,
                 'shiftType': trip.shiftType,
-                'numberOfLog': trip.numberOfLog,
+                'numberOfLoads': trip.numberOfLoads,
                 'truckNo': trip.truckNo,
                 'source': trip.source.sourceName,
                 'startTime': trip.startTime,
