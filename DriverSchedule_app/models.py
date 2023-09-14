@@ -27,6 +27,19 @@ class Driver(models.Model):
 
     def __str__(self) -> str:
         return str(self.driverId)
+    
+
+class LeaveRequest(models.Model):
+    employee = models.ForeignKey(Driver, on_delete=models.CASCADE)
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+    reason = models.TextField()
+    status = models.CharField(max_length=20, choices=[('Pending', 'Pending'), ('Approved', 'Approved'), ('Denied', 'Denied')], default='Pending')
+    # Add other fields as needed
+
+    def __str__(self):
+        return f"{self.employee} - {self.start_date} to {self.end_date}"
+
 
 
 class Client(models.Model):
@@ -58,12 +71,10 @@ class Trip(models.Model):
     source = models.ForeignKey(Source, on_delete=models.PROTECT)
     startTime = models.CharField(max_length=200)
     endTime = models.CharField(max_length=200)
-    logSheet = models.CharField(max_length=200)
+    logSheet = models.FileField(upload_to='static/img/finalLogSheet')
     comment = models.CharField(max_length=200)
     dockets =  models.CharField(max_length=50)
-
     
-
     def __str__(self) -> str:
         return str(self.id)
 
@@ -72,7 +83,9 @@ class Docket(models.Model):
     docketId = models.AutoField(primary_key=True)
     tripId = models.ForeignKey(Trip, on_delete=models.CASCADE)
     docketNumber = models.IntegerField()
-    docketFile = models.CharField(max_length=200)
+    # docketFile = models.CharField(max_length=200)
+    docketFile = models.FileField(upload_to='static/img/docketFiles')
+
 
     def __str__(self) -> str:
         return str(self.tripId)
