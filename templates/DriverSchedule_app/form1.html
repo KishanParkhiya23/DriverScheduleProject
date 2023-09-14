@@ -3,16 +3,26 @@
 <head>
   <title>Driver details form-1</title>
   <!-- Include Bootstrap CSS -->
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, shrink-to-fit=no"
+  />
   <link rel="stylesheet" href="/static/css/vendor/bootstrap5/bootstrap5.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap"
+    rel="stylesheet"
+  />
   <link rel="stylesheet" href="/static/css/form.css" />
   {% comment %}
-  <link href="library/bootstrap-5/    .min.css" rel="stylesheet" /> {% endcomment %}
+  <link href="library/bootstrap-5/    .min.css" rel="stylesheet" />
+  {% endcomment %}
   <script src="library/bootstrap-5/bootstrap.bundle.min.js"></script>
   <script src="/static/js/vendor/bootstrap5/dselect.js"></script>
   <!-- select2 for searching dropdown -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css"
+    rel="stylesheet"
+  />
   <style>
     .errorMsg {
       font-size: 0.7rem;
@@ -27,7 +37,7 @@
     }
 
     body {
-      font-family: "Helvetica Neue", Helvetica, Arial
+      font-family: "Helvetica Neue", Helvetica, Arial;
     }
 
     .form-select {
@@ -79,33 +89,33 @@
       margin: 0 auto;
     }
 
-    /* #signUpForm {
-      max-width: 100%;
-      padding: 15px;
-    } */
-
-
     .select2-container .select2-selection--single {
       height: 45px !important;
     }
 
-    .select2-container--default .select2-selection--single .select2-selection__rendered {
+    .select2-container--default
+      .select2-selection--single
+      .select2-selection__rendered {
       padding: 7px 14px !important;
     }
 
-    .select2-container--default .select2-selection--single .select2-selection__arrow {
+    .select2-container--default
+      .select2-selection--single
+      .select2-selection__arrow {
       top: 7px !important;
       right: 10px !important;
     }
   </style>
-
 </head>
 
 <body>
   <div class="container-fluid" id="mainCont">
-    
-    <form id="signUpForm" action="#" method="POST"
-      enctype="multipart/form-data">
+    <form
+      id="signUpForm"
+      action="{%  url 'DriverSchedule_app:createFormSession' %}"
+      method="POST"
+      enctype="multipart/form-data"
+    >
       {% csrf_token %}
       <div class="form-header d-flex mb-4">
         <span class="stepIndicator text-active">Trip details</span>
@@ -119,15 +129,21 @@
               <label for="driverId">Driver ID :</label>
 
               {% if driver_ids is not None %}
-              <input type="text" name="driverId" id="driverId"
-                value="{% if driver_ids is not None %}{{driver_ids}}{% endif %}" readonly class="d-block">
-              {% endif %}
-
-              {% if drivers is not None%}
+              <input
+                type="text"
+                name="driverId"
+                id="driverId"
+                value="{% if driver_ids is not None %}{{driver_ids}}{% endif %}"
+                readonly
+                class="d-block"
+              />
+              {% endif %} {% if drivers is not None%}
               <select name="driverId" class="form-select" id="driverId">
                 <option value="" disabled selected>Select Driver Id</option>
                 {% for driver in drivers %}
-                <option value="{{ driver.driverId }}-{{driver.name}}">{{ driver.driverId }} - {{driver.name}}</option>
+                <option value="{{ driver.driverId }}-{{driver.name}}">
+                  {{ driver.driverId }} - {{driver.name}}
+                </option>
                 {% endfor %}
               </select>
               {% endif %}
@@ -167,7 +183,6 @@
             </div>
           </div>
         </div>
-
       </div>
 
       <!-- Number of Logs and truck number -->
@@ -176,8 +191,13 @@
           <div class="step">
             <div class="mb-3">
               <label for="numberOfLoads">Number of load :</label>
-              <input type="number" min="1" id="numberOfLoads" name="numberOfLoads"
-                value="{{ request.session.data.numberOfLoads|default_if_none:'' }}" />
+              <input
+                type="number"
+                min="1"
+                id="numberOfLoads"
+                name="numberOfLoads"
+                value="{{ request.session.data.numberOfLoads|default_if_none:'' }}"
+              />
               <i class="fa" aria-hidden="true"></i>
               <li class="errorMsg"></li>
             </div>
@@ -187,7 +207,12 @@
           <div class="step">
             <div class="mb-3">
               <label for="numberOfLoads">Truck No :</label>
-              <select id="truckNum" class="js-select2 form-control" disabled>
+              <select
+                id="truckNum"
+                class="js-select2 form-control"
+                disabled
+                name="truckNum"
+              >
                 <option value="">Select an Item</option>
               </select>
               <i class="fa" aria-hidden="true"></i>
@@ -217,9 +242,7 @@
                 <option value="" disabled selected>Select source</option>
 
                 {% for source in sources %}
-                <option value="{{ source }}">
-                  {{ source }}
-                </option>
+                <option value="{{ source }}">{{ source }}</option>
                 {% endfor %}
               </select>
               <i class="fa" aria-hidden="true"></i>
@@ -236,8 +259,12 @@
           <div class="step">
             <div class="mb-3">
               <label for="startTime">Start time :</label>
-              <input type="time" name="startTime" id="startTime"
-                value="{{ request.session.data.startTime|default_if_none:'' }}" />
+              <input
+                type="time"
+                name="startTime"
+                id="startTime"
+                value="{{ request.session.data.startTime|default_if_none:'' }}"
+              />
               <i class="fa" aria-hidden="true"></i>
               <li class="errorMsg"></li>
             </div>
@@ -247,8 +274,12 @@
           <div class="step">
             <div class="mb-3">
               <label for="endTime">End time :</label>
-              <input type="time" name="endTime" id="endTime"
-                value="{{ request.session.data.endTime|default_if_none:'' }}" />
+              <input
+                type="time"
+                name="endTime"
+                id="endTime"
+                value="{{ request.session.data.endTime|default_if_none:'' }}"
+              />
               <i class="fa" aria-hidden="true"></i>
               <li class="errorMsg"></li>
             </div>
@@ -258,7 +289,13 @@
           <div class="step">
             <div class="mb-3">
               <label for="logSheet">Upload Log Sheet :</label>
-              <input type="file" placeholder="Load Sheet" name="logSheet" class="p-2" id="logSheet" />
+              <input
+                type="file"
+                placeholder="Load Sheet"
+                name="logSheet"
+                class="p-2"
+                id="logSheet"
+              />
               <i class="fa" aria-hidden="true"></i>
               <li class="errorMsg"></li>
             </div>
@@ -267,12 +304,18 @@
       </div>
 
       <div class="mb-3">
-        <textarea placeholder="Comments" name="comments"
-          class="form-control">{{ request.session.data.comments|default_if_none:'' }}</textarea>
+        <textarea placeholder="Comments" name="comments" class="form-control">
+{{ request.session.data.comments|default_if_none:'' }}</textarea
+        >
       </div>
       <div class="row">
         <div class="form-footer">
-          <input type="submit" id="nextBtn" value="Next" class="btn btn-primary  btn-lg   responsive-btn mybtn" />
+          <input
+            type="submit"
+            id="nextBtn"
+            value="Next"
+            class="btn btn-primary btn-lg responsive-btn mybtn"
+          />
         </div>
       </div>
     </form>
@@ -282,18 +325,26 @@
   <script src="/static/js/vendor/bootstrap5/bootstrap5.bundle.min.js"></script>
 
   <!-- jquery cdn  -->
-  {% comment %}
-  <script src="/static/js/vendor/jquery/jquery-3.7.0.min.js"></script> {% endcomment %}
+
+  <script src="/static/js/vendor/jquery/jquery-3.7.0.min.js"></script>
   <script src="/static/js/vendor/jquery/jquery.validate.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-  <script src="https://code.jquery.com/jquery-3.7.0.min.js"
-    integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+  {% comment %}
+  <script
+    src="https://code.jquery.com/jquery-3.7.0.min.js"
+    integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+    crossorigin="anonymous"
+  ></script>
+  {% endcomment %}
+
   <!-- select2 for searching dropdown -->
   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script> -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"
     integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  ></script>
   <script src="{% static 'js/form1.js' %}"></script>
-
 </body>

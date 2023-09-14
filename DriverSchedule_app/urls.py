@@ -14,7 +14,9 @@ urlpatterns = [
     path('getForm2/', views.getForm2, name='form2'),
     path('getFileForm/', views.getFileForm, name='getFileForm'),
     path('saveFileForm/', views.saveFileForm, name='saveFileForm'),
-    path('createFormSession/<str:truckNum>/',
+    # path('createFormSession/<str:truckNum>/',
+    #      views.createFormSession, name='createFormSession'),
+    path('createFormSession/',
          views.createFormSession, name='createFormSession'),
     path('formsSave/', views.formsSave, name='formsSave'),
 
@@ -25,4 +27,5 @@ urlpatterns = [
     # Get truck numbers using client name
     path('getTrucks/', views.getTrucks, name="getTrucks"),
     path('clientDocket/', views.clientDocket, name="clientDocket"),
+    
 ]

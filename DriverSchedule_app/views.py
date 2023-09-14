@@ -112,27 +112,29 @@ def getForm2(request):
         return redirect('DriverSchedule_app:form1')
 
 
-@csrf_protect
-@api_view(['POST'])
-def createFormSession(request, truckNum):
-
+# @csrf_protect
+# @api_view(['POST'])
+def createFormSession(request):
+    clientName = request.POST.get('clientName')
     logSheet = request.FILES.get('logSheet')
-
     if logSheet:
+        
         load_sheet_folder_path = 'Temp_Load_Sheet'
         fileName = logSheet.name
         time = (str(timezone.now())).replace(':', '').replace(
             '-', '').replace(' ', '').split('.')
         time = time[0]
+        
         log_sheet_new_filename = 'Load_Sheet' + time + \
             '!_@' + fileName.replace(" ", "").replace("\t", "")
+            
         lfs = FileSystemStorage(location=load_sheet_folder_path)
-        l_filename = lfs.save(log_sheet_new_filename, logSheet)
+        l_filename = lfs.save(log_sheet_new_filename, logSheet)  
+              
         data = {
-            'driverId': request.POST.get('driverId'),
-            'clientName': request.POST.get('clientName'),
-            # 'truckNum': request.POST.get('truckNum'),
-            'truckNum': truckNum.split('-')[0],
+            'driverId': request.POST.get('driverId').split('-')[0],
+            'clientName': clientName,
+            'truckNum': request.POST.get('truckNum').split('-')[0],
             'startTime': request.POST.get('startTime'),
             'endTime': request.POST.get('endTime'),
             'shiftDate': request.POST.get('shiftDate'),
@@ -143,65 +145,76 @@ def createFormSession(request, truckNum):
             'comments': request.POST.get('comments')
         }
 
-        request.session['data'] = data
-
-        # with open('extra.txt','a') as f:
-        #     f.writelines(data)
-        #     f.close()
-
+        
+        
+    data['docketGiven'] = True if Client.objects.get(name = clientName).docketGiven else False
+     
+    request.session['data'] = data
     # request.session.set_expiry(60 * 5)
-    request.session['data'] = timezone.now() + timezone.timedelta(minutes=5)
-    return redirect('DriverSchedule_app:form2')
+    
+    return formsSave(request) if Client.objects.get(name = clientName).docketGiven else redirect('DriverSchedule_app:form2')
+   
 
-
-@csrf_protect
-@api_view(['POST'])
+# @csrf_protect
+# @api_view(['POST'])
 def formsSave(request):
 
     driverId = request.session['data']['driverId']
-    driverId = driverId.split('-')[0]
+    # driverId = driverId.split('-')[0]
     clientName = request.session['data']['clientName']
     shiftType = request.session['data']['shiftType']
     numberOfLoads = request.session['data']['numberOfLoads']
     truckNo = request.session['data']['truckNum']
-    print(truckNo)
+    # print(truckNo)
     startTime = request.session['data']['startTime']
     endTime = request.session['data']['endTime']
     source = request.session['data']['source']
     shiftDate = request.session['data']['shiftDate']
     logSheet = request.session['data']['logSheet']
     comment = request.session['data']['comments']
-
+    # return HttpResponse(os.path.exists('Final_Load_Sheet/' + logSheet))
     temp_logSheet = ''
     Docket_no = []
     Docket_file = []
+    time = (str(timezone.now())).replace(':', '').replace(
+                    '-', '').replace(' ', '').split('.')
+    time = time[0]
+    
+    if not request.session['data']['docketGiven']:
+        for i in range(1, int(numberOfLoads)+1):
+            
+            key = f"docketNumber[{i}]"
+            docket_number = request.POST.get(key)
+            Docket_no.append(docket_number)
+            key_files = f"docketFile[{i}]"
+            
+            docket_files = request.FILES.get(key_files)
 
-    for i in range(1, int(numberOfLoads)+1):
-        key = f"docketNumber[{i}]"
-        docket_number = request.POST.get(key)
-        Docket_no.append(docket_number)
-        key_files = f"docketFile[{i}]"
-        docket_files = request.FILES.get(key_files)
+            temp_logSheet = temp_logSheet + '-' + docket_number
 
-        temp_logSheet = temp_logSheet + '-' + docket_number
+            if docket_files:
+                
+                # return HttpResponse(docket_files.name)
+            
+                # PDF ---------------
+                pdf_folder_path = 'static/img/docketFiles'
+                fileName = docket_files.name
+                # return HttpResponse(fileName.split('.')[-1])
+                docket_new_filename =  time + '!_@' + docket_number + '.' +  fileName.split('.')[-1]
+                # return HttpResponse(docket_new_filename)
+                pfs = FileSystemStorage(location=pdf_folder_path)
+                pfs.save(docket_new_filename, docket_files)
+                Docket_file.append(docket_new_filename)
 
-        if docket_files:
-            # Specify the folder path where you want to save the file
 
-            # PDF ---------------
-            pdf_folder_path = 'Docket_File'
-            fileName = docket_files.name
-            time = (str(timezone.now())).replace(':', '').replace(
-                '-', '').replace(' ', '').split('.')
-            time = time[0]
-            docket_new_filename = time + '!_@' + docket_number
-            pfs = FileSystemStorage(location=pdf_folder_path)
-            pfs.save(docket_new_filename, docket_files)
-            Docket_file.append(docket_new_filename)
-
-    temp_logSheet = time + '!_@' + temp_logSheet[1:]
-    shutil.move('Temp_Load_Sheet/' + logSheet, 'Final_Load_Sheet/' +
-                temp_logSheet) if not os.path.exists('Final_Load_Sheet/' + temp_logSheet) else None
+    # temp_logSheet = time + '!_@' + temp_logSheet[1:]
+    
+    # if not os.path.exists('Final_Load_Sheet/' + logSheet):
+    #     shutil.move('Temp_Load_Sheet/' + logSheet, 'Final_Load_Sheet/' + logSheet) 
+    
+    if not os.path.exists('static/img/finalLogSheet/' + logSheet):
+        shutil.move('Temp_Load_Sheet/' + logSheet, 'static/img/finalLogSheet/' + logSheet)
+        
     driver = Driver.objects.get(driverId=driverId)
     source = Source.objects.get(sourceName=source)
 
@@ -213,22 +226,21 @@ def formsSave(request):
         truckNo=truckNo,
         startTime=startTime,
         endTime=endTime,
-        logSheet=temp_logSheet,  # Use the filename or None
+        logSheet='static/img/finalLogSheet/' + logSheet,  # Use the filename or None
         comment=comment,
         source=source,
         shiftDate=shiftDate
     )
-    # print(source)
-    # return HttpResponse(source)
     trip.save()
-
-    for i in range(len(Docket_no)):
-        docket_ = Docket(
-            tripId=trip,
-            docketNumber=Docket_no[i],  # Use the specific value from the list
-            docketFile=Docket_file[i],  # Use the specific value from the list
-        )
-        docket_.save()
+    
+    if not request.session['data']['docketGiven']:
+        for i in range(len(Docket_no)):
+            docket_ = Docket(
+                tripId=trip,
+                docketNumber=Docket_no[i],  # Use the specific value from the list
+                docketFile='static/img/docketFiles/' + Docket_file[i],  # Use the specific value from the list
+            )
+            docket_.save()
 
     del request.session['data']
 
@@ -368,3 +380,53 @@ def clientDocket(request):
     docket = client.docketGiven
     print(docket)
     return JsonResponse({'status': True, 'docket': docket})
+
+
+def viewLogSheet(request, logSheet):
+    file = 'static/img/finalLogSheet/' + logSheet
+    
+    try:
+        if logSheet.split('.')[-1] == 'pdf':
+            with open(file, 'rb') as pdf_file:
+                response = HttpResponse(pdf_file.read(), content_type='application/pdf')
+                response['Content-Disposition'] = 'inline;filename=mypdf.pdf'
+                return response
+                # response = FileResponse(pdf_file, content_type='application/pdf')
+                # response['Content-Disposition'] = f'inline; filename="{file}"'
+                # return response
+        elif logSheet.split('.')[-1].lower() == 'jpg' or logSheet.split('.')[-1].lower() == 'jpeg':
+            with open(file, 'rb') as image_file:
+                # Create an HTTP response with the image content and appropriate content type.
+                response = HttpResponse(image_file.read(), content_type='image/jpeg')
+
+                # You can set the Content-Disposition header if needed.
+                # response['Content-Disposition'] = f'inline; filename="{image_name}"'
+
+                return response
+    except FileNotFoundError:
+        return HttpResponse('file_not_found.html')
+
+
+def viewDocketFile(request, docketFile):
+    file = 'static/img/docketFiles/' + docketFile
+    
+    try:
+        if docketFile.split('.')[-1] == 'pdf':
+            with open(file, 'rb') as pdf_file:
+                response = HttpResponse(pdf_file.read(), content_type='application/pdf')
+                response['Content-Disposition'] = 'inline;filename=mypdf.pdf'
+                return response
+                # response = FileResponse(pdf_file, content_type='application/pdf')
+                # response['Content-Disposition'] = f'inline; filename="{file}"'
+                # return response
+        elif docketFile.split('.')[-1].lower() == 'jpg' or docketFile.split('.')[-1].lower() == 'jpeg':
+            with open(file, 'rb') as image_file:
+                # Create an HTTP response with the image content and appropriate content type.
+                response = HttpResponse(image_file.read(), content_type='image/jpeg')
+
+                # You can set the Content-Disposition header if needed.
+                # response['Content-Disposition'] = f'inline; filename="{image_name}"'
+
+                return response
+    except FileNotFoundError:
+        return HttpResponse('file_not_found.html')

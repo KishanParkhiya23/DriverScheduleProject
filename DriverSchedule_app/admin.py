@@ -1,5 +1,7 @@
 from django.contrib import admin
 from .models import *
+from schedule_trip.models import *
+from django.core.mail import send_mail, EmailMessage
 
 # Register your models here.
 
@@ -50,20 +52,58 @@ class AdminTruck_(admin.ModelAdmin):
     search_fields = ["adminTruckNumber"]
 
     inlines = [ClientTruckInline]
-    
+     
 admin.site.register(AdminTruck, AdminTruck_)
 
 
-class ClientTruckConnection_(admin.ModelAdmin):
+# class ClientTruckConnection_(admin.ModelAdmin):
 
-    list_display = ["truckNumber", "clientId", 'clientTruckId']
-    search_fields = ['clientTruckId']
+#     list_display = ["truckNumber", "clientId", 'clientTruckId']
+#     search_fields = ['clientTruckId']
 
-admin.site.register(ClientTruckConnection, ClientTruckConnection_)
+# admin.site.register(ClientTruckConnection, ClientTruckConnection_)
+
+class LeaveReqAdminDriver(admin.TabularInline):
+    model = LeaveRequest
+    extra = 0
 
 class Driver_(admin.ModelAdmin):
-
+    # inlines = [LeaveReqAdminDriver]
     list_display = ["driverId", "name", 'phone']
     search_fields = ["driverId"]
 
+    def upcoming_leave_requests(self, obj):
+        now = timezone.now()
+        upcoming_requests = obj.leaverequest_set.filter(start_date__gte=now).order_by('start_date')[:2]
+        return ', '.join([str(request) for request in upcoming_requests])
+
+    upcoming_leave_requests.short_description = 'Upcoming Leave Requests'
+
 admin.site.register(Driver, Driver_)
+
+admin.site.register(LeaveRequest)
+
+
+@admin.register(Appointment)
+class AppointmentAdmin(admin.ModelAdmin):
+    search_fields = ('driver', 'client',)
+    list_display = ["Title", "Start_Date_Time", "End_Date_Time", "Status", "driver"]
+    list_filter = ["Status"]
+    actions = ['send_email_action']
+
+    def send_email_action(self, request, queryset):
+        subject = 'Your job application status'
+        message = 'Your job application status has been updated.'
+        from_email = 'siddhantethansrec@example.com'  # Set your email address
+        recipient_list = [applicant.driver.email for applicant in queryset]
+        print(recipient_list)
+        
+        # Send emails to selected applicants
+        for applicant in queryset:
+            send_mail(subject, message, from_email, [applicant.driver.email])
+            # send_notification_email(applicant.progress_set.latest('date_updated'))
+        
+        self.message_user(request, f'Emails sent to {len(queryset)} applicants.')
+    
+    send_email_action.short_description = 'Send email to selected applicants'
+

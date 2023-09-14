@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'DriverSchedule_app'
+    'DriverSchedule_app',
+    'schedule_trip',
+    'run_background_task'
 ]
 
 MIDDLEWARE = [
@@ -132,5 +134,14 @@ REST_FRAMEWORK = {
 STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
+
+
+EMAIL_BACKEND ='django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'siddhantethansrec@gmail.com'
+EMAIL_HOST_PASSWORD = 'iwyeacbkgtoubbny'
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
 
 
