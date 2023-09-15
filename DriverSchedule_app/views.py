@@ -150,7 +150,7 @@ def createFormSession(request):
     data['docketGiven'] = True if Client.objects.get(name = clientName).docketGiven else False
      
     request.session['data'] = data
-    # request.session.set_expiry(60 * 5)
+    request.session.set_expiry(5)
     
     return formsSave(request) if Client.objects.get(name = clientName).docketGiven else redirect('DriverSchedule_app:form2')
    

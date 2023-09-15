@@ -1,17 +1,33 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator,RegexValidator
 from datetime import date
+from django.utils import timezone
 
-# def generate_4digit_unique_key():
-#     try:
-#         latest_data = Driver.objects.latest('Uniqeid')
-#         latest_data = int(latest_data.Uniqeid)
-#         random = latest_data+1
-#     except:
-#         random =  1111
-#     return random
+class Client(models.Model):
+    clientId = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=200)
+    docketGiven = models.BooleanField(default=False)
 
+    def __str__(self) -> str:
+        return str(self.name)
 
+class AdminTruck(models.Model):
+    adminTruckNumber = models.PositiveIntegerField(validators=[MaxValueValidator(999999),MinValueValidator(100000)], unique=True)
+    
+    def __str__(self):
+        return str(self.adminTruckNumber)
+    
+class ClientTruckConnection(models.Model):
+    truckNumber = models.ForeignKey(AdminTruck, on_delete=models.CASCADE)
+    clientId = models.ForeignKey(Client, on_delete=models.CASCADE)
+    clientTruckId = models.PositiveIntegerField(validators=[MaxValueValidator(999999)],unique=True)
+    # startDate = models.DateField(default=date.today())  
+    startDate = models.DateField(default=timezone.now())  
+    endDate = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return str(self.truckNumber) + str(self.clientId)
+    
 class Driver(models.Model):
     # driverId = models.IntegerField(primary_key=True, unique=True, default=generate_4digit_unique_key, editable=False)
     driverId = models.IntegerField(primary_key=True, unique=True)
@@ -24,6 +40,8 @@ class Driver(models.Model):
     ])
     email = models.CharField(max_length=200)
     password = models.CharField(max_length=50)
+    
+    truckNum = models.ForeignKey(ClientTruckConnection, on_delete=models.CASCADE, default=None)
 
     def __str__(self) -> str:
         return str(self.driverId)
@@ -42,23 +60,12 @@ class LeaveRequest(models.Model):
 
 
 
-class Client(models.Model):
-    clientId = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=200)
-    docketGiven = models.BooleanField(default=False)
-    
-
-    def __str__(self) -> str:
-        return str(self.name)
-
 
 class Source(models.Model):
-
     sourceName = models.CharField(primary_key=True, max_length=200)
 
     def __str__(self) -> str:
         return str(self.sourceName)
-
 
 class Trip(models.Model):
     verified = models.BooleanField(default=False)
@@ -73,7 +80,7 @@ class Trip(models.Model):
     endTime = models.CharField(max_length=200)
     logSheet = models.FileField(upload_to='static/img/finalLogSheet')
     comment = models.CharField(max_length=200)
-    dockets =  models.CharField(max_length=50)
+    # dockets =  models.CharField(max_length=50)
     
     def __str__(self) -> str:
         return str(self.id)
@@ -86,25 +93,11 @@ class Docket(models.Model):
     # docketFile = models.CharField(max_length=200)
     docketFile = models.FileField(upload_to='static/img/docketFiles')
 
-
     def __str__(self) -> str:
         return str(self.tripId)
 
 
-class AdminTruck(models.Model):
-    adminTruckNumber = models.PositiveIntegerField(validators=[MaxValueValidator(999999),MinValueValidator(100000)], unique=True)
-    
-    def __str__(self):
-        return str(self.adminTruckNumber)
 
 
-class ClientTruckConnection(models.Model):
-    truckNumber = models.ForeignKey(AdminTruck, on_delete=models.CASCADE)
-    clientId = models.ForeignKey(Client, on_delete=models.CASCADE)
-    clientTruckId = models.PositiveIntegerField(validators=[MaxValueValidator(999999)],unique=True)
-    startDate = models.DateField(default=date.today())  
-    endDate = models.DateField(null=True, blank=True)
 
-    def __str__(self):
-        return str(self.truckNumber) + str(self.clientId)
     
