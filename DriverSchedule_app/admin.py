@@ -82,6 +82,7 @@ class Driver_(admin.ModelAdmin):
 admin.site.register(Driver, Driver_)
 
 admin.site.register(LeaveRequest)
+admin.site.register(NatureOfLeave)
 
 
 @admin.register(Appointment)
