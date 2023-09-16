@@ -45,7 +45,6 @@ class Driver(models.Model):
 
     def __str__(self) -> str:
         return str(self.driverId)
-    
 
 class LeaveRequest(models.Model):
     employee = models.ForeignKey(Driver, on_delete=models.CASCADE)
@@ -57,9 +56,6 @@ class LeaveRequest(models.Model):
 
     def __str__(self):
         return f"{self.employee} - {self.start_date} to {self.end_date}"
-
-
-
 
 class Source(models.Model):
     sourceName = models.CharField(primary_key=True, max_length=200)
@@ -85,7 +81,6 @@ class Trip(models.Model):
     def __str__(self) -> str:
         return str(self.id)
 
-
 class Docket(models.Model):
     docketId = models.AutoField(primary_key=True)
     tripId = models.ForeignKey(Trip, on_delete=models.CASCADE)
@@ -95,9 +90,3 @@ class Docket(models.Model):
 
     def __str__(self) -> str:
         return str(self.tripId)
-
-
-
-
-
-    

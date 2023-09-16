@@ -230,3 +230,21 @@ $("#clientId").on("change", function () {
     });
   }
 });
+
+// get client name
+
+$(".select2-selection").eq(1).hide();
+
+$("#driverId").on("change", function () {
+  let driverId = $(this).val();
+
+  if (driverId) {
+    let driverName = driverId.split('-')[1].trim();
+
+    $("#clientId option").filter(function() {
+      return $(this).text() === driverName;
+    }).prop('selected', true);
+
+    $("#clientId").trigger("change.select2");
+  }
+});

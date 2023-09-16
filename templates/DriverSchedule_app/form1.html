@@ -157,12 +157,26 @@
           <div class="step">
             <div class="mb-3">
               <label for="clientId">Client Name :</label>
+              {% if client_names is not None %}
+              <input
+                type="text"
+                name="clientName"
+                id="clientName"
+                value="{% if client_names is not None %}{{client_ids.0}}{% endif %}"
+                readonly
+                class="d-block"
+              />
+              {% comment %} {% endif %} 
+              {% if client_ids is not None%} {% endcomment %}
+              {% else %}
+
               <select name="clientName" class="form-select" id="clientId">
                 <option value="" disabled selected>Select Client Name</option>
                 {% for client_name in client_ids %}
                 <option value="{{ client_name }}">{{ client_name }}</option>
                 {% endfor %}
               </select>
+              {% endif %}
               <i class="fa" aria-hidden="true"></i>
               <li class="errorMsg"></li>
             </div>
@@ -207,14 +221,29 @@
           <div class="step">
             <div class="mb-3">
               <label for="numberOfLoads">Truck No :</label>
-              <select
+
+              {% if DriverTruckNum is not None %}
+              <input
+                type="text"
+                name="truckNum"
+                id="truckNum"
+                value="{% if DriverTruckNum is not None %}{{DriverTruckNum}}{% endif %}"
+                readonly
+                class="d-block"
+              />
+              
+                            
+              {% else %}
+               <select
                 id="truckNum"
                 class="js-select2 form-control"
                 disabled
                 name="truckNum"
               >
                 <option value="">Select an Item</option>
-              </select>
+              </select> 
+              {% endif %}
+
               <i class="fa" aria-hidden="true"></i>
               <li class="errorMsg"></li>
             </div>

@@ -86,14 +86,27 @@ def getForm1(request):
             'sources': sources,
         }
         try:
-            driver_id = str(Driver.objects.get(email=user_email)) + '-' + str(
+            Driver_  = Driver.objects.get(email=user_email)
+            driver_id = str(Driver_) + '-' + str(
                 Driver.objects.filter(email=user_email).values_list('name', flat=True)[0])
             params['driver_ids'] = driver_id
             params['drivers'] = None
+            DriverTruckNum = Driver_.truckNum.truckNumber
+            params['DriverTruckNum'] = DriverTruckNum
+
+            client_names = Client.objects.values_list('name', flat=True)
+            params['client_names'] = client_names
+
+            # print(Driver_.truckNum.truckNumber)
+
+
         except:
             params['driver_ids'] = None
             drivers = Driver.objects.all()
             params['drivers'] = drivers
+            params['DriverTruckNum'] = None
+            params['client_names'] = None
+            
 
         return render(request, 'DriverSchedule_app/form1.html', params)
 
