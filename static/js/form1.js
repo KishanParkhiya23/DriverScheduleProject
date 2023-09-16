@@ -10,11 +10,15 @@ document.getElementById("nextBtn").addEventListener("click", function (event) {
   event.preventDefault();
 
   if (checkData()) {
-    let truckNumElement = document.getElementById("truckNum");
-    let selectedValue =
-      truckNumElement.options[truckNumElement.selectedIndex].text;
+    let truckNumField = $("input[name='truckNum']");
 
-    $("select[name='truckNum']").val(selectedValue);
+    if (truckNumField.val() == null) {
+      let truckNumElement = document.getElementById("truckNum");
+      let selectedValue =
+        truckNumElement.options[truckNumElement.selectedIndex].text;
+
+      $("select[name='truckNum']").val(selectedValue);
+    }
     $("#signUpForm").submit();
   }
 });
@@ -159,40 +163,27 @@ function setSuccess(inputElement) {
   inputElement.style.borderColor = "";
 }
 
-var select_box_element = document.querySelector("#clientId");
-
-dselect(select_box_element, {
-  search: true,
-});
+try {
+  var select_box_element = document.querySelector("#clientId");
+  dselect(select_box_element, {
+    search: true,
+  });
+} catch (error) {}
 
 var select_box_element = document.querySelector("#source");
 
 dselect(select_box_element, {
   search: true,
 });
+try {
+  if (drivers) {
+    var driverIdSelect = document.querySelector("#driverId");
 
-if (drivers) {
-  var driverIdSelect = document.querySelector("#driverId");
-
-  dselect(driverIdSelect, {
-    search: true,
-  });
-}
-
-// Get the input element
-const numberOfLoadsInput = document.getElementById("numberOfLoads");
-
-// Add an event listener for input changes
-numberOfLoadsInput.addEventListener("input", function () {
-  // Remove leading zeros
-  this.value = this.value.replace(/^1+/, "");
-
-  // Convert to positive integer
-  let value = parseInt(this.value) || 1;
-
-  // Update the input value
-  this.value = value;
-});
+    dselect(driverIdSelect, {
+      search: true,
+    });
+  }
+} catch (error) {}
 
 $(".js-select2").select2({
   width: "100%",
@@ -239,12 +230,28 @@ $("#driverId").on("change", function () {
   let driverId = $(this).val();
 
   if (driverId) {
-    let driverName = driverId.split('-')[1].trim();
+    let driverName = driverId.split("-")[1].trim();
 
-    $("#clientId option").filter(function() {
-      return $(this).text() === driverName;
-    }).prop('selected', true);
+    $("#clientId option")
+      .filter(function () {
+        return $(this).text() === driverName;
+      })
+      .prop("selected", true);
 
     $("#clientId").trigger("change.select2");
   }
+});
+
+// Get the input element
+const numberOfLoadsInput = $("#numberOfLoads");
+
+numberOfLoadsInput.on("input", function () {
+  // Remove leading zeros
+  $(this).val($(this).val().replace(/^1+/, ""));
+
+  // Convert to positive integer
+  let value = parseInt($(this).val()) || 1;
+
+  // Update the input value
+  $(this).val(value);
 });

@@ -94,7 +94,9 @@ def getForm1(request):
             DriverTruckNum = Driver_.truckNum.truckNumber
             params['DriverTruckNum'] = DriverTruckNum
 
-            client_names = Client.objects.values_list('name', flat=True)
+
+            client_names = Driver_.truckNum.clientId.name
+            # return HttpResponse(client_names)
             params['client_names'] = client_names
 
             # print(Driver_.truckNum.truckNumber)
@@ -163,7 +165,7 @@ def createFormSession(request):
     data['docketGiven'] = True if Client.objects.get(name = clientName).docketGiven else False
      
     request.session['data'] = data
-    request.session.set_expiry(5)
+    # request.session.set_expiry(5)
     
     return formsSave(request) if Client.objects.get(name = clientName).docketGiven else redirect('DriverSchedule_app:form2')
    
