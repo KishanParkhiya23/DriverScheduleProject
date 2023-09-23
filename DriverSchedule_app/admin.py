@@ -7,8 +7,19 @@ from django.core.mail import send_mail, EmailMessage
 
 
 
-class DocketInline(admin.TabularInline):
+class DocketInline(admin.StackedInline):
     model = Docket
+    fieldsets=[
+        (
+            "docket_details",
+            {
+                "fields" : 
+                    ["docketId","tripId","docketNumber","docketFile","waitingTime","waitingTimeCost","transferKMS","transferKMSCost","cubicMl","cubicMlCost","minLoad","minLoadCost","others","othersCost","total_cost"]
+            } 
+        )
+    ]
+        
+    readonly_fields = ["total_cost"]
     extra = 0
     
 class Trip_(admin.ModelAdmin):
@@ -21,12 +32,12 @@ class Trip_(admin.ModelAdmin):
 
 admin.site.register(Trip,Trip_)
 
-# class Docket_(admin.ModelAdmin):
+class Docket_(admin.ModelAdmin):
 
-#     list_display = ["docketId","tripId", 'docketNumber', 'docketFile']
-#     search_fields = ["docketNumber"]
+    list_display = ["docketId","tripId", 'docketNumber', 'docketFile','total_cost']
+    search_fields = ["docketNumber"]
 
-# admin.site.register(Docket, Docket_)
+admin.site.register(Docket, Docket_)
 
 class Client_(admin.ModelAdmin):
 

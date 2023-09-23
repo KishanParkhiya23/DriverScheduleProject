@@ -84,7 +84,6 @@ class Trip(models.Model):
     endTime = models.CharField(max_length=200)
     logSheet = models.FileField(upload_to='static/img/finalLogSheet')
     comment = models.CharField(max_length=200)
-    # dockets =  models.CharField(max_length=50)
     
     def __str__(self) -> str:
         return str(self.id)
@@ -93,8 +92,27 @@ class Docket(models.Model):
     docketId = models.AutoField(primary_key=True)
     tripId = models.ForeignKey(Trip, on_delete=models.CASCADE)
     docketNumber = models.IntegerField()
-    # docketFile = models.CharField(max_length=200)
     docketFile = models.FileField(upload_to='static/img/docketFiles')
-
+    #  costs
+    waitingTime = models.TimeField(default=timezone.now())
+    waitingTimeCost = models.FloatField(default=0)
+    
+    transferKMS = models.PositiveIntegerField(default=0)
+    transferKMSCost = models.FloatField(default=0)
+    
+    cubicMl = models.PositiveIntegerField(default=0)
+    cubicMlCost = models.FloatField(default=0)
+    
+    minLoad = models.PositiveIntegerField(default=0)
+    minLoadCost = models.FloatField(default=0)
+    
+    others = models.PositiveIntegerField(default=0)
+    othersCost = models.FloatField(default=0)
+    
+    @property
+    def total_cost(self):
+        print("Cost")
+        return self.waitingTimeCost + self.transferKMSCost + self.cubicMlCost + self.minLoadCost + self.othersCost
+    
     def __str__(self) -> str:
         return str(self.tripId)
