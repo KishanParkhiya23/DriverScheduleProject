@@ -131,7 +131,7 @@
         </div>
     </div>
 
-    <form id="signUpForm" action="#" method="POST" enctype="multipart/form-data" style="width:60%">
+    <form id="signUpForm" action="{% url 'Invoice_analysis_app:invoiceConvert' %}" method="POST" enctype="multipart/form-data" style="width:60%">
         {% csrf_token %}
         <div class="form-header d-flex mb-4">
             <span class="stepIndicator text-active">Upload invoice file</span>
@@ -142,7 +142,7 @@
                 <div class="step">
                     <div class="mb-3">
                         <label for="invoiceFile">Upload Invoice file :</label>
-                        <input type="file" placeholder="Load Sheet" name="invoiceFile" class="p-2" id="invoiceFile" accept=".xlsx" required/>
+                        <input type="file" placeholder="Load Sheet" name="invoiceFile" class="p-2" id="invoiceFile" accept=".csv" required/>
                         <span class="errorMsg d-none">Please enter a file first</span>
                     </div>
                 </div>

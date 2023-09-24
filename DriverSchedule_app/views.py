@@ -17,6 +17,7 @@ from django.utils import timezone
 from django.contrib import messages
 from itertools import chain
 from django.http import JsonResponse
+from django.urls import reverse
 
 
 # To call home page
@@ -168,7 +169,7 @@ def createFormSession(request):
     # request.session.set_expiry(5)
     
     return formsSave(request) if Client.objects.get(name = clientName).docketGiven else redirect('DriverSchedule_app:form2')
-   
+
 
 # @csrf_protect
 # @api_view(['POST'])
@@ -180,14 +181,12 @@ def formsSave(request):
     shiftType = request.session['data']['shiftType']
     numberOfLoads = request.session['data']['numberOfLoads']
     truckNo = request.session['data']['truckNum']
-    # print(truckNo)
     startTime = request.session['data']['startTime']
     endTime = request.session['data']['endTime']
     source = request.session['data']['source']
     shiftDate = request.session['data']['shiftDate']
     logSheet = request.session['data']['logSheet']
     comment = request.session['data']['comments']
-    # return HttpResponse(os.path.exists('Final_Load_Sheet/' + logSheet))
     temp_logSheet = ''
     Docket_no = []
     Docket_file = []
@@ -219,13 +218,7 @@ def formsSave(request):
                 # return HttpResponse(docket_new_filename)
                 pfs = FileSystemStorage(location=pdf_folder_path)
                 pfs.save(docket_new_filename, docket_files)
-                Docket_file.append(docket_new_filename)
-
-
-    # temp_logSheet = time + '!_@' + temp_logSheet[1:]
-    
-    # if not os.path.exists('Final_Load_Sheet/' + logSheet):
-    #     shutil.move('Temp_Load_Sheet/' + logSheet, 'Final_Load_Sheet/' + logSheet) 
+                Docket_file.append(docket_new_filename) 
     
     if not os.path.exists('static/img/finalLogSheet/' + logSheet):
         shutil.move('Temp_Load_Sheet/' + logSheet, 'static/img/finalLogSheet/' + logSheet)
