@@ -44,47 +44,7 @@ def setLine(given_line,previous_line):
         return res
     else:
         return custom_row
-    
-# def insertIntoModel(data):
-#     dataList = data.split(',')
-#     DocketPDFobj = DocketPDF()
-    
-#     DocketPDFobj.truckNo = dataList[0]
-#     DocketPDFobj.docketNumber = dataList[1]
-#     DocketPDFobj.save()
-#     dataList  = dataList[2:]
-    
-#     while dataList:
-#         dump = dataList[:10]
-#         if dump[2].upper().strip() == "TRUCK TRANSFER PER KM":
-#             truckCostObj = transferKMSCost()
-#             truckCostObj.docketNo = DocketPDF.objects.get(docketNumber = DocketPDFobj.docketNumber)
-#             truckCostObj.deliveryDate = dump[0]
-#             truckCostObj.source = dump[1]
-#             truckCostObj.paidKMS = dump[3]
-#             truckCostObj.invoiceQuantity = dump[4]
-#             truckCostObj.unit = dump[5]
-#             truckCostObj.unitPrice = dump[6]
-#             truckCostObj.TotalExGST = dump[7]
-#             truckCostObj.GSTPayable = dump[8]
-#             truckCostObj.TotalInGST = dump[9]
-#             truckCostObj.save()
-            
-#         elif dump[2].upper().strip() == "FEE SERVICE WAITING TIME PER MINUTE":
-#             waitingCostObj = WaitingTimeCost()
-#             waitingCostObj.docketNo = DocketPDF.objects.get(docketNumber = DocketPDFobj.docketNumber)
-#             waitingCostObj.deliveryDate = dump[0]
-#             waitingCostObj.source = dump[1]
-#             waitingCostObj.paidKMS = dump[3]
-#             waitingCostObj.invoiceQuantity = dump[4]
-#             waitingCostObj.unit = dump[5]
-#             waitingCostObj.unitPrice = dump[6]
-#             waitingCostObj.TotalExGST = dump[7]
-#             waitingCostObj.GSTPayable = dump[8]
-#             waitingCostObj.TotalInGST = dump[9]
-#             waitingCostObj.save()
-            
-#         dataList = dataList[10:]
+
 
 def appendToCsv(given_list,file_name,folder_name,truckNo):
     if not os.path.exists(folder_name):
@@ -110,7 +70,12 @@ while(file_path[-4:] != '.csv'):
     print("Your given file is not valid.")
     file_path = getFileName()
 
+# File name
 converted_file = "converted_" + args
+
+with open("File_name_file.txt",'w') as f:
+    f.write(converted_file)
+    f.close()
 
 folderName =  'static/img/Invoice'
 print(folderName)

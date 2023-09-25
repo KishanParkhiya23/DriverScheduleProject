@@ -5,7 +5,7 @@ from django.utils import timezone
 # Create your models here.
 class DocketPDF(models.Model):
     docketNumber = models.IntegerField()
-    truckNo = models.IntegerField(default=0)
+    truckNo = models.FloatField(default=0)
     #  costs
     # waitingTime = models.TimeField(default=timezone.now())
     # waitingTimeCost = models.FloatField(default=0)
@@ -34,7 +34,7 @@ class WaitingTimeCost(models.Model):
     docketNo = models.ForeignKey(DocketPDF,on_delete=models.CASCADE)
     deliveryDate = models.DateField(default=timezone.now()) 
     source = models.CharField(max_length=255)   
-    paidKMS = models.IntegerField(default=0)
+    paidKMS = models.FloatField(default=0)
     invoiceQuantity = models.FloatField(default=0)
     unit = models.CharField(max_length=255)
     unitPrice = models.FloatField(default=0)
@@ -49,7 +49,7 @@ class transferKMSCost(models.Model):
     docketNo = models.ForeignKey(DocketPDF,on_delete=models.CASCADE)
     deliveryDate = models.DateField(default=timezone.now())
     source = models.CharField(max_length=255)   
-    paidKMS = models.IntegerField(default=0)
+    paidKMS = models.FloatField(default=0)
     invoiceQuantity = models.FloatField(default=0)
     unit = models.CharField(max_length=255)
     unitPrice = models.FloatField(default=0)
