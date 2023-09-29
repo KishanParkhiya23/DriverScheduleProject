@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'schedule_trip',
     'run_background_task',
     'Invoice_analysis_app',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -145,4 +146,4 @@ EMAIL_HOST_PASSWORD = 'iwyeacbkgtoubbny'
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
-
+MODEL_TO_CSV_FILE_NAME = '' 

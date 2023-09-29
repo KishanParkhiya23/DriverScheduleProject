@@ -131,7 +131,7 @@
         </div>
     </div>
 
-    <form id="signUpForm" action="#" method="POST" enctype="multipart/form-data" style="width:60%">
+    <form id="signUpForm" action="{% url 'Invoice_analysis_app:invoiceConvert' %}" method="POST" enctype="multipart/form-data" style="width:60%">
         {% csrf_token %}
         <div class="form-header d-flex mb-4">
             <span class="stepIndicator text-active">Upload invoice file</span>
@@ -152,6 +152,12 @@
                     <div class="mb-3">
                         <input type="submit" id="submit" value="submit" style="margin-top: 1.5em;" />
                     </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <input type="checkbox" name="save" id="save_" value="1" >
+                    <label for="save_">Save data in database</label>
                 </div>
             </div>
         </div>
