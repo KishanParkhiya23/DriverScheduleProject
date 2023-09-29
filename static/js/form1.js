@@ -32,7 +32,6 @@ var source = document.getElementById("source");
 var shiftDate = document.getElementById("shiftDate");
 var startTime = document.getElementById("startTime");
 var endTime = document.getElementById("endTime");
-var logSheet = document.getElementById("logSheet");
 var drivers = "{{drivers}}";
 
 function checkData() {
@@ -45,7 +44,6 @@ function checkData() {
   var shiftDateValue = shiftDate.value.trim();
   var startTimeValue = startTime.value.trim();
   var endTimeValue = endTime.value.trim();
-  var logSheetValue = logSheet.value.trim();
 
   var isValid = true;
 
@@ -125,13 +123,6 @@ function checkData() {
     setSuccess(endTime);
   }
 
-  if (logSheetValue == "") {
-    setError(logSheet, "Please upload a Load Sheet.");
-    isValid = false;
-  } else {
-    setSuccess(logSheet);
-  }
-
   var invalidInputs = document.querySelectorAll(".isInvalid");
   invalidInputs.forEach(function (input) {
     setError(input, "This field is required.");
@@ -139,6 +130,22 @@ function checkData() {
 
   return isValid;
 }
+
+$("#logSheet").change(function () {
+  var logSheetValue = $(this).val();
+  var allowedExtensions = ["jpg", "jpeg", "pdf"];
+  var fileExtension = logSheetValue.split('.').pop().toLowerCase();
+
+  if (logSheetValue == "") {
+    setError(logSheet, "Please upload a Load Sheet.");
+    isValid = false;
+  } else if (allowedExtensions.indexOf(fileExtension) === -1) {
+    setError(logSheet, "Please select a JPG, JPEG, or PDF file.");
+    isValid = false;
+  } else {
+    setSuccess(logSheet);
+  }
+});
 
 function setError(inputElement, msg) {
   var parentBox = inputElement.parentElement;

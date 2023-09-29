@@ -142,7 +142,7 @@
                 <div class="step">
                     <div class="mb-3">
                         <label for="invoiceFile">Upload Invoice file :</label>
-                        <input type="file" placeholder="Load Sheet" name="invoiceFile" class="p-2" id="invoiceFile" accept=".xlsx" required/>
+                        <input type="file" placeholder="Load Sheet" name="csvFile" class="p-2" id="csvFile" accept=".csv" required/>
                         <span class="errorMsg d-none">Please enter a file first</span>
                     </div>
                 </div>
@@ -162,5 +162,21 @@
     <script src="{% static 'js/analysis.js' %}"></script>
 
 </body>
+<script src="{% static 'js/vendor/jquery/jquery-3.7.0.min.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        $("#csvFile").change(function () {
+            var fileName = $(this).val();
+            var validExtensions = ["csv"]; 
 
+            if ($.inArray(fileName.split('.').pop().toLowerCase(), validExtensions) === -1) {
+                $(".errorMsg").text("Please select a valid CSV file.");
+                $(".errorMsg").removeClass("d-none");
+                $(this).val(""); 
+            } else {
+                $(".errorMsg").addClass("d-none");
+            }
+        });
+    });
+</script>
 </html>

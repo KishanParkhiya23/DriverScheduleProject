@@ -11,6 +11,9 @@
         .form-element {
             margin-bottom: 1rem;
         }
+        .file-input.error {
+            border: 2px solid red;
+        }
 
         @media (max-width: 768px) {
             .container {
@@ -53,7 +56,8 @@
                             </div>
                             <div class="col-md-6 col-12">
                                 <label for="docketFile{{i}}" class="base-label">{{i}}<sup>st</sup> Docket File:</label>
-                                <input required type="file" name="docketFile[{{i}}]" id="docketFile{{i}}">
+                                <input required type="file" name="docketFile[{{i}}]" id="docketFile{{i}}" accept=".jpg, .jpeg, .pdf" class="file-input">
+                                <div class="error-message" style="color: red;font-size: 0.7rem"></div>
                             </div>
                         </div>
                     </div>
@@ -84,5 +88,23 @@
     <!-- jquery cdn  -->
     <script src="/static/js/vendor/jquery/jquery-3.7.0.min.js"></script>
     <script src="/static/js/vendor/jquery/jquery.validate.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+<script>
+    $(document).ready(function () {
+        $('input[type="file"]').change(function () {
+            var fileName = $(this).val();
+            var allowedExtensions = /(\.jpg|\.jpeg|\.pdf)$/i;
+            var errorMessageElement = $(this).siblings('.error-message');
+
+            if (!allowedExtensions.exec(fileName)) {
+                errorMessageElement.text('Please upload a JPG, JPEG, or PDF file only.');
+                $(this).addClass('error'); // Add the error class to the input element
+            } else {
+                errorMessageElement.text('');
+                $(this).removeClass('error'); // Remove the error class from the input element
+            }
+        });
+    });
+</script>
 </body>
