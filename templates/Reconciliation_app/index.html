@@ -1,0 +1,150 @@
+{% load i18n static %}
+
+<head>
+    <title>Analysis form</title>
+    <link rel="stylesheet" href="/static/css/vendor/bootstrap5/bootstrap5.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/form.css' %}" />
+    <script src="{% static 'js/vendor/bootstrap5/bootstrap5.bundle.min.js' %}"></script>
+    <script src="{% static 'js/vendor/bootstrap5/dselect.js' %}"></script>
+    <script src="{% static 'js/vendor/multiselect-dropdown.js' %}"></script>
+
+    <!-- Include Django admin static files -->
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/base.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/dashboard.css' %}">
+    <!-- Add more admin CSS files as needed -->
+
+    <script type="text/javascript" src="{% static 'admin/js/core.js' %}"></script>
+    <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+    <!-- Add more admin JavaScript files as needed -->
+    <style>
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial;
+        }
+
+        .errorMsg {
+            font-size: 0.7rem;
+            color: rgb(255, 0, 0);
+            margin-top: 0.3rem;
+            list-style-type: none;
+        }
+
+        .isInvalid {
+            border: 1px solid rgb(255, 0, 0) !important;
+            border-radius: 7px !important;
+        }
+
+        .buttons {
+            text-align: right;
+        }
+
+        .buttons button:nth-child(1) {
+            display: inline-block;
+            width: 49%;
+            margin-left: auto;
+            color: #17a2b8;
+            background-color: #fff;
+            border-color: #17a2b8;
+        }
+
+
+        .buttons button:nth-child(1):hover {
+            color: #fff;
+            background-color: #59c3d4;
+            border-color: #59c3d4;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                font-size: 14px;
+            }
+
+            .container {
+                padding: 0 15px;
+            }
+
+            .mybtn {
+                width: 100% !important;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .col-md-4 {
+                flex-basis: 100%;
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                font-size: 14px;
+            }
+        }
+
+        .responsive-btn {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+    </style>
+
+</head>
+
+<body>
+    <!-- Include the default Django admin header -->
+    <div id="header">
+        <div id="branding">
+            <h1 id="site-name"><a href="{% url 'admin:index' %}">GSS </a></h1>
+        </div>
+        <div id="user-tools">
+            {% if user.is_active and user.is_staff %}
+            <strong>Welcome, {{ user.username }}</strong>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="{% url 'admin:logout' %}">Log out</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="container-fluid" id="mainCont">
+        <form id="signUpForm" action="{% url 'Reconciliation_app:reconciliation' %}" method="POST" enctype="multipart/form-data" style="width:60%">
+            {% csrf_token %}
+            <div class="form-header d-flex mb-4">
+                <span class="stepIndicator text-active">Reconciliation form</span>
+            </div>
+
+            <!-- Start date - End date -->
+            <div class="row">
+                <div class="col-md-6 col-12">
+                    <div class="step">
+                        <div class="mb-3">
+                            <label for="startDate">Start date:</label>
+                            <input type="date" id="startDate" name="startDate" />
+                            <span class="errorMsg d-none">Please enter start date</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-12">
+                    <div class="step">
+                        <div class="mb-3">
+                            <label for="endDate">End date:</label>
+                            <input type="date" id="endDate" name="endDate" readonly />
+                            <span class="errorMsg d-none">Please enter end date</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="buttons">
+                <button type="submit" name="reconciliation" id="reconciliation"
+                    class="btn btn-info responsive-btn">Reconciliation</button>
+            </div>
+
+        </form>
+    </div>
+
+    <script src="{% static 'js/vendor/jquery/jquery-3.7.0.min.js' %}"></script>
+    <script src="{% static 'js/reconciliation_analysis.js' %}"></script>
+
+</body>
+
+</html>

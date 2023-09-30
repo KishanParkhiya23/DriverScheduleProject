@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'schedule_trip',
     'Invoice_analysis_app',
     'django_extensions',
+    'Reconciliation_app',
 ]
 
 MIDDLEWARE = [

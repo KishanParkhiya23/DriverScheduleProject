@@ -1,22 +1,16 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from rest_framework.response import Response
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from .models import *
 from rest_framework.decorators import api_view
-import shutil
-import os
-import tabula
-import requests
-from django.shortcuts import redirect
+import shutil, os,tabula, requests
 from django.views.decorators.csrf import csrf_protect
 from datetime import datetime
 from django.conf import settings
-from django.shortcuts import redirect
 from django.core.files.storage import FileSystemStorage
 from django.utils import timezone
 from django.contrib import messages
 from itertools import chain
-from django.http import JsonResponse
 from django.urls import reverse
 
 
@@ -283,28 +277,28 @@ def saveFileForm(request):
         return Response({'status': '404', 'message': 'File not found'})
 
 
-@api_view(['GET'])
-def analysisView(request):
-    params = {}
-    try:
-        client_names = Client.objects.values_list('name', flat=True).distinct()
-    except:
-        client_names = None
-    try:
-        drivers = Driver.objects.all()
-    except:
-        drivers = None
+# @api_view(['GET'])
+# def analysisView(request):
+#     params = {}
+#     try:
+#         client_names = Client.objects.values_list('name', flat=True).distinct()
+#     except:
+#         client_names = None
+#     try:
+#         drivers = Driver.objects.all()
+#     except:
+#         drivers = None
 
-    try:
-        admin_trucks = AdminTruck.objects.values_list(
-            'adminTruckNumber', flat=True).distinct()
-    except:
-        admin_trucks = None
-    try:
-        client_trucks = ClientTruckConnection.objects.values_list(
-            'clientTruckId', flat=True).distinct()
-    except:
-        client_trucks = None
+#     try:
+#         admin_trucks = AdminTruck.objects.values_list(
+#             'adminTruckNumber', flat=True).distinct()
+#     except:
+#         admin_trucks = None
+#     try:
+#         client_trucks = ClientTruckConnection.objects.values_list(
+#             'clientTruckId', flat=True).distinct()
+#     except:
+#         client_trucks = None
 
     try:
         basePlant = BasePlant.objects.values_list(
@@ -320,13 +314,13 @@ def analysisView(request):
     return render(request, 'admin/analysis.html', params)
 
 
-@csrf_protect
-@api_view(['POST'])
-def downloadAnalysis(request):
-    startDate = request.POST.get('startDate')
-    endDate = request.POST.get('endDate')
-    tables = request.POST.getlist('tables[]')
-    values = request.POST.getlist('values[]')
+# @csrf_protect
+# @api_view(['POST'])
+# def downloadAnalysis(request):
+#     startDate = request.POST.get('startDate')
+#     endDate = request.POST.get('endDate')
+#     tables = request.POST.getlist('tables[]')
+#     values = request.POST.getlist('values[]')
 
     if tables[0] == "all":
         data = Trip.objects.filter(shiftDate__range=[startDate, endDate])
@@ -348,11 +342,11 @@ def downloadAnalysis(request):
                 # Add other fields from the Trip model as needed
             })
 
-        return JsonResponse({'status': True, 'trips': trip_list})
+#         return JsonResponse({'status': True, 'trips': trip_list})
 
-    # print(request.POST,values,tables)
+#     # print(request.POST,values,tables)
 
-    # return HttpResponse('here')
+#     # return HttpResponse('here')
 
 
 @csrf_protect
