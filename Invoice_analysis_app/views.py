@@ -6,7 +6,8 @@ from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_protect
 from django.utils import timezone
 from django.contrib import messages
-from DriverSchedule_app.models import *
+from Basic_app.models import *
+from Trips_details_app.models import *
 from itertools import chain
 
 # --------------------------------------------
@@ -105,16 +106,16 @@ def analysisView(request):
         client_trucks = None
 
     try:
-        sources = Source.objects.values_list(
-            'sourceName', flat=True).distinct()
+        basePlants = BasePlant.objects.values_list(
+            'basePlantName', flat=True).distinct()
     except:
-        sources = None
+        basePlants = None
 
     trucks = list(chain(admin_trucks, client_trucks))
     params['client_names'] = client_names
     params['drivers'] = drivers
     params['trucks'] = trucks
-    params['sources'] = sources
+    params['basePlants'] = basePlants
     return render(request, 'admin/analysis.html', params)
 
 
@@ -127,7 +128,7 @@ def downloadAnalysis(request):
     values = request.POST.getlist('values[]')
 
     if tables[0] == "all":
-        data = Trip.objects.filter(shiftDate__range=[startDate, endDate])
+        data = DriverTrip.objects.filter(shiftDate__range=[startDate, endDate])
         print(data)
         trip_list = []
         for trip in data:
@@ -138,7 +139,7 @@ def downloadAnalysis(request):
                 'shiftType': trip.shiftType,
                 'numberOfLoads': trip.numberOfLoads,
                 'truckNo': trip.truckNo,
-                'source': trip.source.sourceName,
+                'basePlant': trip.basePlant.basePlant,
                 'startTime': trip.startTime,
                 'endTime': trip.endTime,
                 'logSheet': trip.logSheet,

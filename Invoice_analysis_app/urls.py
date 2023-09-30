@@ -8,7 +8,7 @@ urlpatterns = [
     path('', views.index, name='index'),    
     path('invoiceConvert/', views.invoiceConvert, name='invoiceConvert'),    
     path('DriverEntry/',views.DriverEntry, name='DriverEntry'),
-    path('DriverSaveData/',views.DriverSaveData, name='DriverSaveData')
+    path('DriverSaveData/',views.DriverSaveData, name='DriverSaveData'),
     
     
     # Trip analysis paths

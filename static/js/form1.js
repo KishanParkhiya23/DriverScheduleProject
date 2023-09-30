@@ -207,7 +207,7 @@ $("#clientId").on("change", function () {
     $("#truckNum").html('<option value="">Loading...</option>');
     $.ajax({
       type: "POST",
-      url: "/DriverSchedule_app/getTrucks/",
+      url: "/Trips_details_app/getTrucks/",
       data: {
         clientName: $(this).val(),
       },

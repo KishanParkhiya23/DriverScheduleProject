@@ -230,8 +230,8 @@
                     <label for="truckNo">Truck number</label>
                 </div>
                 <div class="col">
-                    <input type="radio" name="checkVal" id="source" value="sourceVal" class="checkmark">
-                    <label for="source">Source</label>
+                    <input type="radio" name="checkVal" id="basePlant" value="basePlantVal" class="checkmark">
+                    <label for="basePlant">basePlant</label>
                 </div>
                 <div class="col">
                     <input type="radio" name="checkVal" id="all" value="allVal" class="checkmark">
@@ -275,14 +275,14 @@
                         </select>
                     </div>
                 </div>
-                <!-- Source -->
+                <!-- basePlant -->
                 <div class="col-md-12">
                     <div class="step">
-                        <select name="sourceVal[]" id="sourceVal" multiple multiselect-search="true"
-                            multiselect-select-all="true" class="form-control" placeholder="Select source"
+                        <select name="basePlantVal[]" id="basePlantVal" multiple multiselect-search="true"
+                            multiselect-select-all="true" class="form-control" placeholder="Select basePlant"
                             aria-readonly="true">
-                            {% for source in sources %}
-                            <option value="{{source}}">{{source}}</option>
+                            {% for basePlant in basePlants %}
+                            <option value="{{basePlant}}">{{basePlant}}</option>
                             {% endfor %}
                         </select>
                     </div>

@@ -76,9 +76,9 @@ $(document).ready(function () {
           tables: ["Truck"],
           values: checkValData,
         };
-      } else if (checkedVal == "sourceVal") {
+      } else if (checkedVal == "basePlantVal") {
         var info = {
-          tables: ["Source"],
+          tables: ["basePlant"],
           values: checkValData,
         };
       } else {
@@ -95,7 +95,6 @@ $(document).ready(function () {
 
       $.ajax({
         type: "POST",
-        // url: "{% url 'DriverSchedule_app:downloadAnalysis' %}", // Replace with the actual URL
         url: "/Invoice_analysis/analysis/download/", // Replace with the actual URL
         data: data,
         beforeSend: function (xhr) {

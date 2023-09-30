@@ -38,11 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'DriverSchedule_app',
-    'schedule_trip',
     'Invoice_analysis_app',
     'django_extensions',
     'Reconciliation_app',
+    'Basic_app',
+    'Driver_leave_app',
+    'Trips_details_app',
 ]
 
 MIDDLEWARE = [

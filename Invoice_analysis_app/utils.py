@@ -80,7 +80,7 @@ with open("File_name_file.txt",'w') as f:
 folderName =  'static/img/Invoice'
 # os.makedirs(folderName)
 with open(folderName+'/'+converted_file,'a') as f:
-    r = "Truck no.,Docket no.,Delivery Date, Source, Description, Paid Kms, Invoice QTY, Unit, Unit price, Total (Excl. GST), GST Payable, Total (Inc. GST),Delivery Date, Source, Description, Paid Kms, Invoice QTY, Unit, Unit price, Total (Excl. GST), GST Payable, Total (Inc. GST),Delivery Date, Source, Description, Paid Kms, Invoice QTY, Unit, Unit price, Total (Excl. GST), GST Payable, Total (Inc. GST),Delivery Date, Source, Description, Paid Kms, Invoice QTY, Unit, Unit price, Total (Excl. GST), GST Payable, Total (Inc. GST) \n" 
+    r = "Truck no.,Docket no.,Delivery Date, basePlant, Description, Paid Kms, Invoice QTY, Unit, Unit price, Total (Excl. GST), GST Payable, Total (Inc. GST),Delivery Date, basePlant, Description, Paid Kms, Invoice QTY, Unit, Unit price, Total (Excl. GST), GST Payable, Total (Inc. GST),Delivery Date, basePlant, Description, Paid Kms, Invoice QTY, Unit, Unit price, Total (Excl. GST), GST Payable, Total (Inc. GST),Delivery Date, basePlant, Description, Paid Kms, Invoice QTY, Unit, Unit price, Total (Excl. GST), GST Payable, Total (Inc. GST) \n" 
     f.write(r)
     f.close()
     res = ''

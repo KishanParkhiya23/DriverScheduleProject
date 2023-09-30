@@ -1,5 +1,5 @@
 import csv 
-from Invoice_analysis_app.models import *
+from Trips_details_app.models import *
 
 def dateConvert(date_):
     date_ = date_.split('/')
@@ -8,20 +8,20 @@ def dateConvert(date_):
 
 def insertIntoModel(dataList):
     # dataList = data.split(',')
-    DocketPDFobj = DocketPDF()
+    ClientTripobj = ClientTrip()
     
-    DocketPDFobj.truckNo = float(dataList[0])
-    DocketPDFobj.docketNumber = float(dataList[1])
-    DocketPDFobj.save()
+    ClientTripobj.truckNo = float(dataList[0])
+    ClientTripobj.docketNumber = float(dataList[1])
+    ClientTripobj.save()
     dataList  = dataList[2:]
     
     while dataList:
         dump = dataList[:10]
         if dump[2].upper().strip() == "TRUCK TRANSFER PER KM":
             truckCostObj = transferKMSCost()
-            truckCostObj.docketNo = DocketPDF.objects.filter(docketNumber = DocketPDFobj.docketNumber).first()
+            truckCostObj.docketNo = ClientTrip.objects.filter(docketNumber = ClientTripobj.docketNumber).first()
             truckCostObj.deliveryDate = dateConvert(dump[0])
-            truckCostObj.source = dump[1]
+            truckCostObj.basePlant = dump[1]
             truckCostObj.paidKMS = float(dump[3]) if dump[3] != '' else 0
             truckCostObj.invoiceQuantity = float(dump[4])
             truckCostObj.unit = dump[5]
@@ -33,9 +33,9 @@ def insertIntoModel(dataList):
             
         elif dump[2].upper().strip() == "FEE SERVICE WAITING TIME PER MINUTE":
             waitingCostObj = WaitingTimeCost()
-            waitingCostObj.docketNo = DocketPDF.objects.filter(docketNumber = DocketPDFobj.docketNumber).first()
+            waitingCostObj.docketNo = ClientTrip.objects.filter(docketNumber = ClientTripobj.docketNumber).first()
             waitingCostObj.deliveryDate = dateConvert(dump[0])
-            waitingCostObj.source = dump[1]
+            waitingCostObj.basePlant = dump[1]
             waitingCostObj.paidKMS = float(dump[3]) if dump[3] != '' else 0
             waitingCostObj.invoiceQuantity = float(dump[4])
             waitingCostObj.unit = dump[5]

@@ -17,7 +17,7 @@ Including another URLconf
 
 from django.urls import include, path
 from rest_framework import routers
-from DriverSchedule_app import views 
+from Trips_details_app import views
 from django.contrib import admin
 # from run_background_task.views import trigger_exe
 # from .views import trigger_exe
@@ -30,13 +30,15 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('DriverSchedule_app/',include("DriverSchedule_app.urls")),
-    path('Invoice_analysis/',include("Invoice_analysis_app.urls")),
+    # path('DriverSchedule_app/', include("DriverSchedule_app.urls")),
+    path('Invoice_analysis/', include("Invoice_analysis_app.urls")),
+    path('Reconciliation_app/', include("Reconciliation_app.urls")),
+    path('Basic_app/', include("Basic_app.urls")),
+    path('Trips_details_app/', include("Trips_details_app.urls")),
     # path('run_exe/', trigger_exe),
-    
-    # form 1 Log Sheet
-    path('static/img/finalLogSheet/<str:logSheet>/',views.viewLogSheet,name="viewLogSheet"),
-    path('static/img/docketFiles/<str:docketFile>/',views.viewDocketFile,name="viewDocketFile"),
-    
-]
 
+    # form 1 Log Sheet
+    path('static/img/finalLogSheet/<str:logSheet>/', views.viewLogSheet, name="viewLogSheet"),
+    path('static/img/docketFiles/<str:docketFile>/', views.viewDocketFile, name="viewDocketFile"),
+
+]
