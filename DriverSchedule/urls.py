@@ -32,6 +32,7 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('DriverSchedule_app/',include("DriverSchedule_app.urls")),
     path('Invoice_analysis/',include("Invoice_analysis_app.urls")),
+    path('Reconciliation_app/',include("Reconciliation_app.urls")),
     path('run_exe/', trigger_exe),
     
     # form 1 Log Sheet

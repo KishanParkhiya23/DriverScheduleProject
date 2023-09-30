@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'run_background_task',
     'Invoice_analysis_app',
     'django_extensions',
+    'Reconciliation_app',
 ]
 
 MIDDLEWARE = [
