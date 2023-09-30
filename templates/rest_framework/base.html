@@ -19,6 +19,12 @@
         <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" />
         <!-- Default theme -->
         <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css" />
+        <style>
+            .dropdown-item:active {
+                background-color:#424549;
+                color: white;
+            }
+        </style>
     </head>
     <body>
       <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
@@ -44,9 +50,8 @@
                             Analysis
                         </a>
                         <div class="dropdown-menu" aria-labelledby="analysisDropdown">
-                            <a class="dropdown-item" href="{% url 'DriverSchedule_app:analysis'%}">Get Analysis</a>
-                            <a class="dropdown-item" href="#">Item 2</a>
-                            <a class="dropdown-item" href="#">Item 3</a>
+                            <a class="dropdown-item" href="{% url 'Invoice_analysis_app:analysis'%}">Get Analysis</a>
+                            <a class="dropdown-item" href="{% url 'Reconciliation_app:index'%}">Get Reconciliation</a>
                         </div>
                     </li>
                 </ul>
