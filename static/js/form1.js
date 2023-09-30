@@ -28,7 +28,7 @@ var clientId = document.getElementById("clientId");
 var shiftType = document.getElementById("shiftType");
 var numberOfLoads = document.getElementById("numberOfLoads");
 var truckNum = document.getElementById("truckNum");
-var source = document.getElementById("source");
+var basePlant = document.getElementById("basePlant");
 var shiftDate = document.getElementById("shiftDate");
 var startTime = document.getElementById("startTime");
 var endTime = document.getElementById("endTime");
@@ -40,7 +40,7 @@ function checkData() {
   var shiftTypeValue = shiftType.value.trim();
   var numberOfLoadsValue = numberOfLoads.value.trim();
   var truckNumValue = truckNum.value.trim();
-  var sourceValue = source.value.trim();
+  var basePlantValue = basePlant.value.trim();
   var shiftDateValue = shiftDate.value.trim();
   var startTimeValue = startTime.value.trim();
   var endTimeValue = endTime.value.trim();
@@ -101,13 +101,13 @@ function checkData() {
     setSuccess(shiftDate);
   }
 
-  if (sourceValue == "") {
-    setError(source, "source can't be left blank.");
-    $("#source").next(".dselect-wrapper").addClass("isInvalid");
+  if (basePlantValue == "") {
+    setError(basePlant, "basePlant can't be left blank.");
+    $("#basePlant").next(".dselect-wrapper").addClass("isInvalid");
 
     isValid = false;
   } else {
-    setSuccess(source);
+    setSuccess(basePlant);
   }
 
   if (startTimeValue == "") {
@@ -177,7 +177,7 @@ try {
   });
 } catch (error) {}
 
-var select_box_element = document.querySelector("#source");
+var select_box_element = document.querySelector("#basePlant");
 
 dselect(select_box_element, {
   search: true,

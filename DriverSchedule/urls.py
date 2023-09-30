@@ -19,7 +19,7 @@ from django.urls import include, path
 from rest_framework import routers
 from DriverSchedule_app import views 
 from django.contrib import admin
-from run_background_task.views import trigger_exe
+# from run_background_task.views import trigger_exe
 # from .views import trigger_exe
 
 router = routers.DefaultRouter()
@@ -32,7 +32,7 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('DriverSchedule_app/',include("DriverSchedule_app.urls")),
     path('Invoice_analysis/',include("Invoice_analysis_app.urls")),
-    path('run_exe/', trigger_exe),
+    # path('run_exe/', trigger_exe),
     
     # form 1 Log Sheet
     path('static/img/finalLogSheet/<str:logSheet>/',views.viewLogSheet,name="viewLogSheet"),

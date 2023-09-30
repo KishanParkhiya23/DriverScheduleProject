@@ -6,4 +6,7 @@ app_name = 'Invoice_analysis_app'
 urlpatterns = [
     path('', views.index, name='index'),    
     path('invoiceConvert/', views.invoiceConvert, name='invoiceConvert'),    
+    path('DriverEntry/',views.DriverEntry, name='DriverEntry'),
+    path('DriverSaveData/',views.DriverSaveData, name='DriverSaveData')
+    
 ]

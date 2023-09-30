@@ -32,8 +32,6 @@ def invoiceConvert(request):
         lfs = FileSystemStorage(location=location)
         l_filename = lfs.save(newFileName, invoiceFile)
 
-        # Continue with your subprocess or further processing
-        # python_executable = sys.executable
         cmd = ["python","Invoice_analysis_app/utils.py", newFileName]
         subprocess.Popen(cmd,stdout=subprocess.PIPE)  
 
@@ -42,9 +40,37 @@ def invoiceConvert(request):
             os.environ["DJANGO_SETTINGS_MODULE"] = "DriverSchedule.settings"      
             cmd = ["python","manage.py", "runscript",'csvToModel.py']
             subprocess.Popen(cmd,stdout=subprocess.PIPE)        
-        # colorama.AnsiToWin32.stream = colorama.AnsiToWin32()
-        
-        # subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        messages.success(request, "Please wait 5 minutes. The data conversion process continues")
+        return redirect('/')
+    except Exception as e:
+        return HttpResponse(f"Error: {str(e)}")
+    
+    
+def DriverEntry(request):
+    return render(request , 'Invoice_analysis/driver_entry_file.html')
+
+@csrf_protect
+@api_view(['POST'])
+def DriverSaveData(request):
+    # return HttpResponse('work')
+    Driver_csv_file = request.FILES.get('DriverCsvFile')
+    if not Driver_csv_file:
+        return HttpResponse("No file uploaded")
+    try:
+        time = (str(timezone.now())).replace(':', '').replace('-', '').replace(' ', '').split('.')
+        time = time[0]
+        newFileName = time + "@_!" + str(Driver_csv_file.name)
+        location = 'static/img/driverRegFile'
+
+        lfs = FileSystemStorage(location=location)
+        l_filename = lfs.save(newFileName, Driver_csv_file)
+        with open("Driver_reg_file.txt",'w') as f:
+            f.write(newFileName)
+            f.close()
+        colorama.AnsiToWin32.stream = None
+        os.environ["DJANGO_SETTINGS_MODULE"] = "DriverSchedule.settings"      
+        cmd = ["python","manage.py", "runscript",'DriverCsvToModel.py']
+        subprocess.Popen(cmd,stdout=subprocess.PIPE)
         messages.success(request, "Please wait 5 minutes. The data conversion process continues")
         return redirect('/')
     except Exception as e:

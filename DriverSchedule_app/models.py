@@ -9,7 +9,7 @@ class Client(models.Model):
     docketGiven = models.BooleanField(default=False)
 
     def __str__(self) -> str:
-        return str(self.name)
+        return str(self.name) 
 
 class AdminTruck(models.Model):
     adminTruckNumber = models.PositiveIntegerField(validators=[MaxValueValidator(999999),MinValueValidator(100000)], unique=True)
@@ -17,16 +17,7 @@ class AdminTruck(models.Model):
     def __str__(self):
         return str(self.adminTruckNumber)
     
-class ClientTruckConnection(models.Model):
-    truckNumber = models.ForeignKey(AdminTruck, on_delete=models.CASCADE)
-    clientId = models.ForeignKey(Client, on_delete=models.CASCADE)
-    clientTruckId = models.PositiveIntegerField(validators=[MaxValueValidator(999999)],unique=True)
-    # startDate = models.DateField(default=date.today())  
-    startDate = models.DateField(default=timezone.now())  
-    endDate = models.DateField(null=True, blank=True)
 
-    def __str__(self):
-        return str(self.truckNumber) + str(self.clientId)
     
 class Driver(models.Model):
     # driverId = models.IntegerField(primary_key=True, unique=True, default=generate_4digit_unique_key, editable=False)
@@ -41,10 +32,24 @@ class Driver(models.Model):
     email = models.CharField(max_length=200)
     password = models.CharField(max_length=50)
     
-    truckNum = models.ForeignKey(ClientTruckConnection, on_delete=models.CASCADE, default=None)
+    # truckNum = models.ForeignKey(ClientTruckConnection, on_delete=models.CASCADE, default=None)
+
 
     def __str__(self) -> str:
-        return str(self.driverId)
+        return str(self.driverId) + str(self.name)
+    
+
+class ClientTruckConnection(models.Model):
+    truckNumber = models.ForeignKey(AdminTruck, on_delete=models.CASCADE)
+    clientId = models.ForeignKey(Client, on_delete=models.CASCADE)
+    driverId =  models.ForeignKey(Driver, on_delete=models.CASCADE)
+    clientTruckId = models.PositiveIntegerField(validators=[MaxValueValidator(999999)],unique=True)
+    # startDate = models.DateField(default=date.today())  
+    startDate = models.DateField(default=timezone.now())  
+    endDate = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return str(self.truckNumber) + str(self.clientId)
     
 class NatureOfLeave(models.Model):
     reason = models.CharField(max_length=200)
@@ -52,8 +57,6 @@ class NatureOfLeave(models.Model):
     def __str__(self) -> str:
             return str(self.reason)
         
-    
-
 class LeaveRequest(models.Model):
     employee = models.ForeignKey(Driver, on_delete=models.CASCADE)
     start_date = models.DateTimeField()
@@ -65,11 +68,11 @@ class LeaveRequest(models.Model):
     def __str__(self):
         return f"{self.employee} - {self.start_date} to {self.end_date}"
 
-class Source(models.Model):
-    sourceName = models.CharField(primary_key=True, max_length=200)
+class BasePlant(models.Model):
+    basePlant = models.CharField(primary_key=True, max_length=200)
 
     def __str__(self) -> str:
-        return str(self.sourceName)
+        return str(self.basePlant)
 
 class Trip(models.Model):
     verified = models.BooleanField(default=False)
@@ -79,7 +82,7 @@ class Trip(models.Model):
     numberOfLoads = models.IntegerField()
     truckNo = models.IntegerField()
     shiftDate = models.DateTimeField()
-    source = models.ForeignKey(Source, on_delete=models.PROTECT)
+    basePlant = models.ForeignKey(BasePlant, on_delete=models.PROTECT)
     startTime = models.CharField(max_length=200)
     endTime = models.CharField(max_length=200)
     logSheet = models.FileField(upload_to='static/img/finalLogSheet')
@@ -116,3 +119,21 @@ class Docket(models.Model):
     
     def __str__(self) -> str:
         return str(self.tripId)
+
+
+class Cost(models.Model):
+    is_Active = models.BooleanField(default=True)
+    cost_id = models.PositiveBigIntegerField(primary_key=True)
+    clientId = models.ForeignKey(Client,on_delete=models.CASCADE)
+    basePlant = models.ForeignKey(BasePlant,on_delete=models.CASCADE)
+    truck_number = models.ForeignKey(AdminTruck ,on_delete=models.CASCADE)
+    startDate = models.DateField(default=timezone.now())  
+    endDate = models.DateField(null=True, blank=True)
+    transferKMSCost = models.FloatField(default=0)
+    waitingTimeCost = models.FloatField(default=0)
+    cartagePerCumCost = models.FloatField(default=0)
+    surchargeCost = models.FloatField(default=0)
+    
+    
+    def __str__(self) -> str:
+        return str(self.cost_id) + str(self.clientId) + str(self.basePlant)

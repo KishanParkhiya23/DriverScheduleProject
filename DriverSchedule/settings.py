@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'DriverSchedule_app',
     'schedule_trip',
-    'run_background_task',
     'Invoice_analysis_app',
     'django_extensions',
 ]

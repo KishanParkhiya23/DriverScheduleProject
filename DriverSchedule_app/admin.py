@@ -24,7 +24,7 @@ class DocketInline(admin.StackedInline):
     
 class Trip_(admin.ModelAdmin):
 
-    list_display = ['verified',"driverId", "clientName", 'truckNo',"shiftType", "startTime", 'endTime',"numberOfLoads", "logSheet","source","shiftDate"]
+    list_display = ['verified',"driverId", "clientName", 'truckNo',"shiftType", "startTime", 'endTime',"numberOfLoads", "logSheet","basePlant","shiftDate"]
     # search_fields = ["driverId", 'clientName']
     list_filter = ('shiftType', 'clientName')
     
@@ -46,23 +46,26 @@ class Client_(admin.ModelAdmin):
 
 admin.site.register(Client, Client_)
 
-class Source_(admin.ModelAdmin):
+class BasePlant_(admin.ModelAdmin):
 
-    list_display = ["sourceName"]
-    search_fields = ["sourceName"]
+    list_display = ["basePlant"]
+    search_fields = ["basePlant"]
 
-admin.site.register(Source, Source_)
+admin.site.register(BasePlant, BasePlant_)
 
 class ClientTruckInline(admin.TabularInline):
     model = ClientTruckConnection
     extra = 0
-    
+  
+class CostInline_(admin.TabularInline):
+    model =  Cost
+    extra = 0  
 class AdminTruck_(admin.ModelAdmin):
 
     list_display = ["adminTruckNumber"]
     search_fields = ["adminTruckNumber"]
 
-    inlines = [ClientTruckInline]
+    inlines = [ClientTruckInline,CostInline_]
      
 admin.site.register(AdminTruck, AdminTruck_)
 
@@ -94,6 +97,8 @@ admin.site.register(Driver, Driver_)
 
 admin.site.register(LeaveRequest)
 admin.site.register(NatureOfLeave)
+# admin.site.register(Cost)
+
 
 
 @admin.register(Appointment)

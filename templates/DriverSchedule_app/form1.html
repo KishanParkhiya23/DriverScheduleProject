@@ -251,7 +251,7 @@
         </div>
       </div>
       <!-- ---------------------------------------------------------------------------------------------------------- -->
-      <!-- source and shift date number -->
+      <!-- basePlant and shift date number -->
       <div class="row">
         <div class="col-md-6 col-12">
           <div class="step">
@@ -266,12 +266,12 @@
         <div class="col-md-6 col-12">
           <div class="step">
             <div class="mb-3">
-              <label for="source">Source :</label>
-              <select name="source" class="form-select" id="source">
-                <option value="" disabled selected>Select source</option>
+              <label for="basePlant">Base Plant :</label>
+              <select name="basePlant" class="form-select" id="basePlant">
+                <option value="" disabled selected>Select Base Plant</option>
 
-                {% for source in sources %}
-                <option value="{{ source }}">{{ source }}</option>
+                {% for basePlant in basePlants %}
+                <option value="{{ basePlant }}">{{ basePlant }}</option>
                 {% endfor %}
               </select>
               <i class="fa" aria-hidden="true"></i>

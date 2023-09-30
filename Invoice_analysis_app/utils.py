@@ -78,7 +78,6 @@ with open("File_name_file.txt",'w') as f:
     f.close()
 
 folderName =  'static/img/Invoice'
-print(folderName)
 # os.makedirs(folderName)
 with open(folderName+'/'+converted_file,'a') as f:
     r = "Truck no.,Docket no.,Delivery Date, Source, Description, Paid Kms, Invoice QTY, Unit, Unit price, Total (Excl. GST), GST Payable, Total (Inc. GST),Delivery Date, Source, Description, Paid Kms, Invoice QTY, Unit, Unit price, Total (Excl. GST), GST Payable, Total (Inc. GST),Delivery Date, Source, Description, Paid Kms, Invoice QTY, Unit, Unit price, Total (Excl. GST), GST Payable, Total (Inc. GST),Delivery Date, Source, Description, Paid Kms, Invoice QTY, Unit, Unit price, Total (Excl. GST), GST Payable, Total (Inc. GST) \n" 

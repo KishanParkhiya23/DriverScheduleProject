@@ -78,32 +78,26 @@ def getForm1(request):
             'adminTruckNumber', flat=True).distinct()
         client_truck_no = ClientTruckConnection.objects.values_list(
             'clientTruckId', flat=True).distinct()
-        sources = Source.objects.values_list(
-            'sourceName', flat=True).distinct()
+        basePlant = BasePlant.objects.values_list(
+            'basePlant', flat=True).distinct()
         params = {
             'client_ids': client_names,
             'admin_truck_no': admin_truck_no,
             'client_truck_no': client_truck_no,
-            'sources': sources,
+            'basePlants': basePlant,
         }
         try:
             Driver_  = Driver.objects.get(email=user_email)
-            driver_id = str(Driver_) + '-' + str(
-                Driver.objects.filter(email=user_email).values_list('name', flat=True)[0])
+            driver_id = str(Driver_.driverId) + '-' + str(Driver_.name)   
             params['driver_ids'] = driver_id
             params['drivers'] = None
-            DriverTruckNum = Driver_.truckNum.truckNumber
-            params['DriverTruckNum'] = DriverTruckNum
+            DriverTruckNum = ClientTruckConnection.objects.get(driverId = Driver_.driverId)
+            params['DriverTruckNum'] = str(DriverTruckNum.clientTruckId) + '-' + str(DriverTruckNum.truckNumber)
+            params['client_names'] = str(DriverTruckNum.clientId.name)
 
 
-            client_names = Driver_.truckNum.clientId.name
-            # return HttpResponse(client_names)
-            params['client_names'] = client_names
-
-            # print(Driver_.truckNum.truckNumber)
-
-
-        except:
+        except Exception as e:
+            print(e)
             params['driver_ids'] = None
             drivers = Driver.objects.all()
             params['drivers'] = drivers
@@ -154,7 +148,7 @@ def createFormSession(request):
             'startTime': request.POST.get('startTime'),
             'endTime': request.POST.get('endTime'),
             'shiftDate': request.POST.get('shiftDate'),
-            'source': request.POST.get('source'),
+            'basePlant': request.POST.get('basePlant'),
             'logSheet': log_sheet_new_filename,
             'shiftType': request.POST.get('shiftType'),
             'numberOfLoads': request.POST.get('numberOfLoads'),
@@ -183,7 +177,7 @@ def formsSave(request):
     truckNo = request.session['data']['truckNum']
     startTime = request.session['data']['startTime']
     endTime = request.session['data']['endTime']
-    source = request.session['data']['source']
+    basePlant = request.session['data']['basePlant']
     shiftDate = request.session['data']['shiftDate']
     logSheet = request.session['data']['logSheet']
     comment = request.session['data']['comments']
@@ -224,7 +218,7 @@ def formsSave(request):
         shutil.move('Temp_Load_Sheet/' + logSheet, 'static/img/finalLogSheet/' + logSheet)
         
     driver = Driver.objects.get(driverId=driverId)
-    source = Source.objects.get(sourceName=source)
+    basePlant = BasePlant.objects.get(basePlant=basePlant)
 
     trip = Trip(
         driverId=driver,
@@ -236,7 +230,7 @@ def formsSave(request):
         endTime=endTime,
         logSheet='static/img/finalLogSheet/' + logSheet,  # Use the filename or None
         comment=comment,
-        source=source,
+        basePlant=basePlant,
         shiftDate=shiftDate
     )
     trip.save()
@@ -313,16 +307,16 @@ def analysisView(request):
         client_trucks = None
 
     try:
-        sources = Source.objects.values_list(
-            'sourceName', flat=True).distinct()
+        basePlant = BasePlant.objects.values_list(
+            'basePlantName', flat=True).distinct()
     except:
-        sources = None
+        basePlant = None
 
     trucks = list(chain(admin_trucks, client_trucks))
     params['client_names'] = client_names
     params['drivers'] = drivers
     params['trucks'] = trucks
-    params['sources'] = sources
+    params['basePlant'] = basePlant
     return render(request, 'admin/analysis.html', params)
 
 
@@ -346,7 +340,7 @@ def downloadAnalysis(request):
                 'shiftType': trip.shiftType,
                 'numberOfLoads': trip.numberOfLoads,
                 'truckNo': trip.truckNo,
-                'source': trip.source.sourceName,
+                'basePlant': trip.basePlant.basePlantName,
                 'startTime': trip.startTime,
                 'endTime': trip.endTime,
                 'logSheet': trip.logSheet,
