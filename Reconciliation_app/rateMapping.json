@@ -1,0 +1,12 @@
+{
+    "WAITING TIME FEE WORKING HOURS" : "waiting_charge_per_hours",
+    "TRUCK TRANSFER PER KM" : "transfer_cost_for_truck_per_km",
+    "FEE SERVICE WAITING TIME PER MINUTE" : "waiting_charge_per_minute",
+    "CARTAGE OTHER PER KM PER CU M" : "cartage_per_km_per_cubic_ml",
+    "FEE SERVICE RETURN PER KM PER CU M" : "return_charge_per_km_per_cubic_ml",
+    "MINIMUM LOAD" : "minimum_load",
+    "SURCHARGE AFTER HOURS MON-FRI 6PM-6AM " : "service_charge_after_hours_mon-fri",
+    "KM PER CU M" : "km_cost_per_cubic_miles",
+    "FEE SERVICE STANDBY PER HALF HR " : "fee_service_standby_per_half_hr",
+    "FEE SERVICE WAITING TIME SCHED 1 PER MIN" : "fee_charge_waiting_time_schedule_per_min"  
+}

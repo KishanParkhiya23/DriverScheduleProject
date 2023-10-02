@@ -15,7 +15,7 @@ class DriverTrip(models.Model):
     startTime = models.CharField(max_length=200)
     endTime = models.CharField(max_length=200)
     logSheet = models.FileField(upload_to='static/img/finalLogSheet')
-    comment = models.CharField(max_length=200)
+    comment = models.CharField(max_length=200 , default='None')
     
     def __str__(self) -> str:
         return str(self.id)
@@ -27,7 +27,7 @@ class Docket(models.Model):
     docketNumber = models.IntegerField()
     docketFile = models.FileField(upload_to='static/img/docketFiles')
     #  costs
-    waitingTime = models.TimeField(default=timezone.now())
+    waitingTimeInMinutes = models.CharField(max_length=255)
     waitingTimeCost = models.FloatField(default=0)
     
     transferKMS = models.PositiveIntegerField(default=0)
