@@ -40,7 +40,7 @@ class Driver(models.Model):
 class ClientTruckConnection(models.Model):
     truckNumber = models.ForeignKey(AdminTruck, on_delete=models.CASCADE)
     clientId = models.ForeignKey(Client, on_delete=models.CASCADE)
-    driverId =  models.ForeignKey(Driver, on_delete=models.CASCADE)
+    # driverId =  models.ForeignKey(Driver, on_delete=models.CASCADE)
     clientTruckId = models.PositiveIntegerField(validators=[MaxValueValidator(999999)],unique=True)
     # startDate = models.DateField(default=date.today())  
     startDate = models.DateField(default=timezone.now())  
@@ -59,7 +59,6 @@ class BasePlant(models.Model):
 
 class Cost(models.Model):
     is_Active = models.BooleanField(default=True)
-    cost_id = models.PositiveBigIntegerField(primary_key=True)
     clientId = models.ForeignKey(Client,on_delete=models.CASCADE)
     basePlant = models.ForeignKey(BasePlant,on_delete=models.CASCADE)
     truck_number = models.ForeignKey(AdminTruck ,on_delete=models.CASCADE)
@@ -71,4 +70,4 @@ class Cost(models.Model):
     surchargeCost = models.FloatField(default=0)
     
     def __str__(self) -> str:
-        return str(self.cost_id) + str(self.clientId) + str(self.basePlant)
+        return str(self.clientId) + str(self.basePlant)

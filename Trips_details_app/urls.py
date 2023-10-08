@@ -18,4 +18,10 @@ urlpatterns = [
     path('getTrucks/', views.getTrucks, name="getTrucks"),
     path('clientDocket/', views.clientDocket, name="clientDocket"),
     
+    
+    # Past data entry 
+    path('pastDataEntry/view/', views.pastDataEntryView, name="pastDataEntryView"),
+    path('pastDataEntry/save/', views.pastDataEntrySave, name="pastDataEntrySave"),
+    
+    
 ]

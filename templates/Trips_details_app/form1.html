@@ -263,14 +263,14 @@
         <div class="col-md-6 col-12">
           <div class="step">
             <div class="mb-3">
-              <label for="basePlant">Base Plant :</label>
+              {% comment %} <label for="basePlant">Base Plant :</label>
               <select name="basePlant" class="form-select" id="basePlant">
                 <option value="" disabled selected>Select Base Plant</option>
 
                 {% for basePlant in basePlants %}
                 <option value="{{ basePlant }}">{{ basePlant }}</option>
                 {% endfor %}
-              </select>
+              </select> {% endcomment %}
               <i class="fa" aria-hidden="true"></i>
               <li class="errorMsg"></li>
             </div>

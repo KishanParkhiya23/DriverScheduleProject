@@ -5,13 +5,15 @@ from django.http import HttpResponse, JsonResponse
 from Basic_app.models import *
 from Trips_details_app.models import *
 from rest_framework.decorators import api_view
-import shutil, os,tabula, requests
+import shutil, os,tabula, requests, colorama, subprocess
 from django.views.decorators.csrf import csrf_protect
 from datetime import datetime
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.utils import timezone
 from django.contrib import messages
+from itertools import chain
+
 
 # To call home page
 @api_view(['GET'])
@@ -79,13 +81,16 @@ def getForm1(request):
         }
         try:
             Driver_  = Driver.objects.get(email=user_email)
-            driver_id = str(Driver_.driverId) + '-' + str(Driver_.name)   
-            params['driver_ids'] = driver_id
+            print(Driver_.driverId)
+            # driver_id = str(Driver_.driverId) + '-' + str(Driver_.name)   
+            # params['driver_ids'] = driver_id
+            params['driver_ids'] = Driver_.driverId
             params['drivers'] = None
-            DriverTruckNum = ClientTruckConnection.objects.get(driverId = Driver_.driverId)
-            params['DriverTruckNum'] = str(DriverTruckNum.clientTruckId) + '-' + str(DriverTruckNum.truckNumber)
-            params['client_names'] = str(DriverTruckNum.clientId.name)
-
+            # DriverTruckNum = ClientTruckConnection.objects.get(driverId = Driver_.driverId)
+            # params['DriverTruckNum'] = str(DriverTruckNum.clientTruckId) + '-' + str(DriverTruckNum.truckNumber)
+            # params['client_names'] = str(DriverTruckNum.clientId.name)
+            params['DriverTruckNum'] = None
+            params['client_names'] = None
 
         except Exception as e:
             print(e)
@@ -139,7 +144,7 @@ def createFormSession(request):
             'startTime': request.POST.get('startTime'),
             'endTime': request.POST.get('endTime'),
             'shiftDate': request.POST.get('shiftDate'),
-            'basePlant': request.POST.get('basePlant'),
+            # 'basePlant': request.POST.get('basePlant'),
             'logSheet': log_sheet_new_filename,
             'shiftType': request.POST.get('shiftType'),
             'numberOfLoads': request.POST.get('numberOfLoads'),
@@ -168,7 +173,7 @@ def formsSave(request):
     truckNo = request.session['data']['truckNum']
     startTime = request.session['data']['startTime']
     endTime = request.session['data']['endTime']
-    basePlant = request.session['data']['basePlant']
+    # basePlant = request.session['data']['basePlant']
     shiftDate = request.session['data']['shiftDate']
     logSheet = request.session['data']['logSheet']
     comment = request.session['data']['comments']
@@ -221,7 +226,7 @@ def formsSave(request):
         endTime=endTime,
         logSheet='static/img/finalLogSheet/' + logSheet,  # Use the filename or None
         comment=comment,
-        basePlant=basePlant,
+        # basePlant=basePlant,
         shiftDate=shiftDate
     )
     trip.save()
@@ -231,7 +236,8 @@ def formsSave(request):
             docket_ = Docket(
                 tripId=trip,
                 docketNumber=Docket_no[i],  # Use the specific value from the list
-                docketFile='static/img/docketFiles/' + Docket_file[i],  # Use the specific value from the list
+                docketFile='static/img/docketFiles/' + Docket_file[i],
+                # Use the specific value from the list
             )
             docket_.save()
 
@@ -347,3 +353,42 @@ def viewDocketFile(request, docketFile):
                 return response
     except FileNotFoundError:
         return HttpResponse('file_not_found.html')
+    
+    
+def pastDataEntryView(request):
+    return render (request , 'Trips_details_app/past_data_entry.html')
+
+@csrf_protect
+@api_view(['POST'])
+def pastDataEntrySave(request):
+    # return HttpResponse(request.POST.get('dayShift'))
+    PastTripFile = request.FILES.get('pastData')
+    
+    if not PastTripFile:
+        return HttpResponse("No file uploaded")
+    
+    try:
+        time = (str(timezone.now())).replace(':', '').replace('-', '').replace(' ', '').split('.')
+        time = time[0]
+        newFileName = time + "@_!" + str(PastTripFile.name)
+        location = 'static/img/pastTripFiles'
+
+        lfs = FileSystemStorage(location=location)
+        lfs.save(newFileName, PastTripFile)
+        
+        with open("pastTripFileName.txt",'w') as f:
+            f.write(newFileName)
+            f.close()
+            
+        colorama.AnsiToWin32.stream = None
+        os.environ["DJANGO_SETTINGS_MODULE"] = "DriverSchedule.settings"      
+        cmd = ["python","manage.py", "runscript",'PastDataSave.py']
+        subprocess.Popen(cmd,stdout=subprocess.PIPE)
+        
+        messages.success(request, "Please wait 5 minutes. The data conversion process continues")
+        return redirect('/')
+    except Exception as e:
+        return HttpResponse(f"Error: {str(e)}")
+    
+    
+    

@@ -14,7 +14,7 @@ class DocketInline(admin.StackedInline):
             "docket_details",
             {
                 "fields" : 
-                    ["docketId","tripId","docketNumber","docketFile","waitingTimeInMinutes","waitingTimeCost","transferKMS","transferKMSCost","cubicMl","cubicMlCost","minLoad","minLoadCost","others","othersCost","total_cost"]
+                    ["docketId","tripId","docketNumber","shiftDate","basePlant","docketFile","waitingTimeInMinutes","waitingTimeCost","transferKMS","transferKMSCost","cubicMl","cubicMlCost","minLoad","minLoadCost","others","othersCost","total_cost"]
             } 
         )
     ]
@@ -74,7 +74,7 @@ def driver_trip_download_csv(modeladmin, request, queryset):
 
 class DriverTrip_(admin.ModelAdmin):
 
-    list_display = ['verified',"driverId", "clientName", 'truckNo',"shiftType", "startTime", 'endTime',"numberOfLoads", "logSheet","basePlant","shiftDate"]
+    list_display = ['verified',"driverId", "clientName", 'truckNo',"shiftType", "startTime", 'endTime',"numberOfLoads", "logSheet","shiftDate"]
     # search_fields = ["driverId", 'clientName']
     list_filter = ('shiftType', 'clientName')
     actions = [driver_trip_download_csv]
@@ -164,32 +164,6 @@ class CostInline_(admin.TabularInline):
     extra = 0  
     
     
-# def admin_truck_download_csv(modeladmin, request, queryset):
-#     # Create a response object with CSV content type
-#     response = HttpResponse(content_type='text/csv')
-#     response['Content-Disposition'] = 'attachment; filename="AdminTruckInfo.csv"'
-
-#     # Create a CSV writer using the response object
-#     writer = csv.writer(response)
-
-#     # Write the header row
-#     writer.writerow(["adminTruckNumber", "clientId", "driverId", "clientTruckId",
-#                      "startDate", "endDate", "is_Active", "cost_id", "basePlant", "startDate", "endDate",
-#                      "transferKMSCost", "waitingTimeCost", "cartagePerCumCost", "surchargeCost"])
-
-#     # Write data rows
-#     for admin_truck in queryset:
-#         for client_truck in admin_truck.clienttruckconnection_set.all():
-#             for cost in admin_truck.cost_set.all():
-            
-#                 writer.writerow([
-#                     admin_truck.adminTruckNumber, client_truck.clientId, client_truck.driverId,
-#                     client_truck.clientTruckId, client_truck.startDate, client_truck.endDate,
-#                     cost.is_Active, cost.cost_id, cost.basePlant, cost.startDate, cost.endDate,
-#                     cost.transferKMSCost, cost.waitingTimeCost, cost.cartagePerCumCost, cost.surchargeCost
-#                 ])
-
-#     return response
 
 
 def admin_truck_download_csv(modeladmin, request, queryset):
@@ -201,8 +175,8 @@ def admin_truck_download_csv(modeladmin, request, queryset):
     writer = csv.writer(response)
 
     # Write the header row
-    writer.writerow(["adminTruckNumber", "clientId", "driverId", "clientTruckId",
-                     "startDate", "endDate", "is_Active", "cost_id", "basePlant",
+    writer.writerow(["adminTruckNumber", "clientId", "clientTruckId",
+                     "startDate", "endDate", "is_Active", "basePlant",
                      "startDate", "endDate", "transferKMSCost", "waitingTimeCost",
                      "cartagePerCumCost", "surchargeCost"])
 
@@ -214,11 +188,11 @@ def admin_truck_download_csv(modeladmin, request, queryset):
         ]
 
         for client_truck in admin_truck.clienttruckconnection_set.all():
-            row_data[1:6] = [client_truck.clientId, client_truck.driverId, client_truck.clientTruckId,
+            row_data[1:5] = [client_truck.clientId, client_truck.clientTruckId,
                              client_truck.startDate, client_truck.endDate]
 
         for cost in admin_truck.cost_set.all():
-            row_data[6:16] = [cost.is_Active, cost.cost_id, cost.basePlant, cost.startDate, cost.endDate,
+            row_data[5:] = [cost.is_Active, cost.basePlant, cost.startDate, cost.endDate,
                               cost.transferKMSCost, cost.waitingTimeCost, cost.cartagePerCumCost, cost.surchargeCost]
 
         # Only write the row if at least admin truck data is present
@@ -336,3 +310,4 @@ class AppointmentAdmin(admin.ModelAdmin):
     
     send_email_action.short_description = 'Send email to selected applicants'
 
+admin.site.register(PastTrip)
